@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 
 const PLACEHOLDER = `Example: A web app where developers paste their GitHub repo URL and get an instant AI-generated README, contributing guide, and documentation site. Targeting solo developers and small teams who hate writing docs.`
 
@@ -10,6 +11,13 @@ export default function CheckPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
+
+  const supabase = createClient()
+
+  async function handleSignOut() {
+    await supabase.auth.signOut()
+    router.push('/login')
+  }
 
   const characterCount = idea.length
   const isValid = idea.trim().length >= 10
@@ -51,17 +59,25 @@ export default function CheckPage() {
       <div className="mx-auto flex max-w-[720px] flex-col gap-8">
 
         {/* Header */}
-        <div className="flex flex-col gap-3">
-          <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#555555]">
-            NullHype AI
-          </p>
-          <h1 className="text-3xl font-semibold text-[#F5F5F5]">
-            HypeCheck
-          </h1>
-          <p className="text-[15px] leading-relaxed text-[#888888]">
-            Describe your startup or side project idea. Get a brutally honest
-            AI-generated validation report in seconds.
-          </p>
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col gap-3">
+            <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#555555]">
+              NullHype AI
+            </p>
+            <h1 className="text-3xl font-semibold text-[#F5F5F5]">
+              HypeCheck
+            </h1>
+            <p className="text-[15px] leading-relaxed text-[#888888]">
+              Describe your startup or side project idea. Get a brutally honest
+              AI-generated validation report in seconds.
+            </p>
+          </div>
+          <button
+            onClick={handleSignOut}
+            className="shrink-0 mt-1 text-[13px] text-[#555555] hover:text-[#F5F5F5] transition-colors"
+          >
+            Sign out
+          </button>
         </div>
 
         {/* Form */}
