@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
+import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 const client = new Anthropic({
@@ -62,6 +63,39 @@ Rules:
 
 export async function POST(request: NextRequest) {
   try {
+    // ── Auth check ──────────────────────────────────────────────────────────
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
+    // ── Usage gate ──────────────────────────────────────────────────────────
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('plan')
+      .eq('id', user.id)
+      .single()
+
+    if (profile?.plan !== 'pro') {
+      const { count } = await supabase
+        .from('reports')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+
+      if ((count ?? 0) >= 3) {
+        return NextResponse.json(
+          { error: 'FREE_TIER_EXHAUSTED' },
+          { status: 403 }
+        )
+      }
+    }
+
+    // ── Input validation ────────────────────────────────────────────────────
     const { idea } = await request.json()
 
     if (!idea || typeof idea !== 'string' || idea.trim().length < 10) {
@@ -78,6 +112,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // ── Claude API call ─────────────────────────────────────────────────────
     const message = await client.messages.create({
       model: 'claude-sonnet-4-5',
       max_tokens: 2048,
@@ -92,7 +127,6 @@ export async function POST(request: NextRequest) {
 
     const rawText = message.content[0].type === 'text' ? message.content[0].text : ''
 
-    // Strip markdown code fences if Claude wraps the JSON
     const cleaned = rawText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
 
     let report
@@ -106,7 +140,21 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // ── Save report to Supabase ─────────────────────────────────────────────
+    const { error: insertError } = await supabase
+      .from('reports')
+      .insert({
+        user_id: user.id,
+        idea_text: idea.trim(),
+        report_data: report,
+      })
+
+    if (insertError) {
+      console.error('Failed to save report to Supabase:', insertError)
+    }
+
     return NextResponse.json({ report })
+
   } catch (error) {
     console.error('HypeCheck API error:', error)
     return NextResponse.json(

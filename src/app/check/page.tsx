@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { UpgradePrompt } from '@/components/UpgradePrompt'
 
 const PLACEHOLDER = `Example: A web app where developers paste their GitHub repo URL and get an instant AI-generated README, contributing guide, and documentation site. Targeting solo developers and small teams who hate writing docs.`
 
@@ -10,6 +11,7 @@ export default function CheckPage() {
   const [idea, setIdea] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
   const router = useRouter()
 
   const supabase = createClient()
@@ -39,6 +41,13 @@ export default function CheckPage() {
 
       const data = await response.json()
 
+      // Free tier exhausted — show upgrade modal instead of error message
+      if (response.status === 403 && data.error === 'FREE_TIER_EXHAUSTED') {
+        setShowUpgradePrompt(true)
+        setLoading(false)
+        return
+      }
+
       if (!response.ok) {
         setError(data.error || 'Something went wrong. Please try again.')
         setLoading(false)
@@ -56,6 +65,12 @@ export default function CheckPage() {
 
   return (
     <main className="min-h-screen bg-[#0A0A0A] px-4 py-12">
+
+      {/* Upgrade modal — renders on top of everything when free tier is exhausted */}
+      {showUpgradePrompt && (
+        <UpgradePrompt onClose={() => setShowUpgradePrompt(false)} />
+      )}
+
       <div className="mx-auto flex max-w-[720px] flex-col gap-8">
 
         {/* Header */}
