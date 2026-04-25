@@ -4,8 +4,8 @@ import { cache } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { HypeCheckReport } from '@/lib/types'
 import ReportView from '@/components/report/ReportView'
+import ShareButton from '@/components/report/ShareButton'
 
-// Wrapped in cache() so generateMetadata + the page component share one query per request.
 const getReportBySlug = cache(async (slug: string): Promise<HypeCheckReport | null> => {
   const supabase = await createClient()
   const { data, error } = await supabase
@@ -57,12 +57,15 @@ export default async function PublicReportPage({
   return (
     <main className="min-h-screen bg-[#0A0A0A] px-4 py-12">
       <div className="mx-auto flex max-w-[720px] flex-col gap-4">
-        <Link
-          href="/check"
-          className="self-start text-[13px] text-[#7C3AED] hover:text-[#A78BFA] transition-colors mb-2"
-        >
-          ✨ Validate your own idea with HypeCheck →
-        </Link>
+        <div className="flex items-center justify-between gap-2">
+          <Link
+            href="/check"
+            className="text-[13px] text-[#7C3AED] hover:text-[#A78BFA] transition-colors"
+          >
+            ✨ Validate your own idea →
+          </Link>
+          <ShareButton ideaTitle={report.ideaTitle} hypeScore={report.hypeScore} />
+        </div>
 
         <ReportView report={report} />
       </div>
