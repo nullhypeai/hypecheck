@@ -70,7 +70,7 @@ export function UpgradePrompt({ onClose }: UpgradePromptProps) {
         <button
           onClick={handleUpgrade}
           disabled={loading}
-          className="w-full bg-violet-600 hover:bg-violet-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-xl transition-colors mb-3"
+          className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-xl transition-colors mb-3"
         >
           {loading ? 'Redirecting to checkout...' : 'Upgrade to Pro — $9/month'}
         </button>

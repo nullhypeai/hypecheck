@@ -58,7 +58,7 @@ export default async function ReportsPage() {
           </div>
           <Link
             href="/check"
-            className="shrink-0 mt-1 rounded-lg bg-[#7C3AED] px-4 py-2 text-[13px] font-semibold text-white hover:bg-[#6D28D9] transition-colors"
+            className="shrink-0 mt-1 rounded-lg bg-[#2563EB] px-4 py-2 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] transition-colors"
           >
             + New HypeCheck
           </Link>
@@ -76,7 +76,7 @@ export default async function ReportsPage() {
             </div>
             <Link
               href="/check"
-              className="rounded-xl bg-[#7C3AED] px-6 py-3 text-[14px] font-semibold text-white hover:bg-[#6D28D9] transition-colors"
+              className="rounded-xl bg-[#2563EB] px-6 py-3 text-[14px] font-semibold text-white hover:bg-[#1D4ED8] transition-colors"
             >
               Run HypeCheck →
             </Link>

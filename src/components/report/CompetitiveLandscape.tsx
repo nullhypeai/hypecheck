@@ -51,8 +51,8 @@ export default function CompetitiveLandscape({
           <CompetitorRow key={i} competitor={c} />
         ))}
       </div>
-      <div className="mt-5 rounded-lg border border-[#7C3AED]/20 bg-[#7C3AED]/5 px-4 py-3">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-[#7C3AED]">
+      <div className="mt-5 rounded-lg border border-[#2563EB]/20 bg-[#2563EB]/5 px-4 py-3">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-[#2563EB]">
           Your Edge
         </p>
         <p className="mt-1 text-[13px] leading-relaxed text-[#888888]">

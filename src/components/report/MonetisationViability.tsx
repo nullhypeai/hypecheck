@@ -7,7 +7,7 @@ function ScoreDots({ score }: { score: number }) {
         <span
           key={i}
           className={`h-2.5 w-2.5 rounded-full ${
-            i < score ? 'bg-[#7C3AED]' : 'bg-[#2A2A2A]'
+            i < score ? 'bg-[#2563EB]' : 'bg-[#2A2A2A]'
           }`}
         />
       ))}

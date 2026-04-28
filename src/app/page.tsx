@@ -14,24 +14,26 @@ export default async function Home() {
     <div className="min-h-screen bg-slate-950 text-white">
       {/* ── Sticky Nav ─────────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <span className="text-sm font-semibold tracking-tight text-white sm:text-base">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-3 py-3 sm:px-6 sm:py-4">
+          <span className="text-xs font-semibold tracking-tight text-white sm:text-sm">
             HypeCheck{" "}
-            <span className="font-normal text-slate-400">by NullHype AI</span>
+            <span className="hidden font-normal text-slate-400 sm:inline">
+              by NullHype AI
+            </span>
           </span>
-          <div className="flex items-center gap-4 sm:gap-6">
+          <div className="flex items-center gap-2 sm:gap-6">
             {user ? (
               <>
                 <Link
                   href="/reports"
-                  className="text-sm text-slate-400 transition-colors hover:text-white"
+                  className="text-xs text-slate-400 transition-colors hover:text-white sm:text-sm"
                 >
                   My reports
                 </Link>
                 <form action={signOut}>
                   <button
                     type="submit"
-                    className="text-sm text-slate-400 transition-colors hover:text-white"
+                    className="text-xs text-slate-400 transition-colors hover:text-white sm:text-sm"
                   >
                     Sign out
                   </button>
@@ -40,14 +42,14 @@ export default async function Home() {
             ) : (
               <Link
                 href="/login"
-                className="text-sm text-slate-400 transition-colors hover:text-white"
+                className="text-xs text-slate-400 transition-colors hover:text-white sm:text-sm"
               >
                 Sign in
               </Link>
             )}
             <Link
               href={ctaHref}
-              className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-400"
+              className="rounded-lg bg-blue-600 px-3 py-2 text-center text-xs font-semibold text-white transition-colors hover:bg-blue-700 sm:px-4 sm:text-sm"
             >
               Check My Idea
             </Link>
@@ -59,25 +61,23 @@ export default async function Home() {
         {/* ── Hero ───────────────────────────────────────────────────── */}
         <section className="bg-slate-950 px-6 py-28 text-center sm:py-36">
           <div className="mx-auto max-w-3xl">
-            <div className="mb-4 inline-flex items-center rounded-full border border-orange-500/30 bg-orange-500/10 px-3 py-1 text-xs font-medium text-orange-400">
-              AI-powered startup reality check
+            <div className="mb-4 inline-flex items-center rounded-full border border-blue-600/30 bg-blue-600/10 px-3 py-1 text-xs font-medium text-blue-400">
+              AI powered startup reality check
             </div>
             <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
               Stop building things{" "}
-              <span className="text-orange-400">nobody wants.</span>
+              <span className="text-blue-400">nobody wants.</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-400">
-              HypeCheck runs an AI-powered reality check on your startup idea —
-              market size, competitors, demand signals, and a brutal honest
+              HypeCheck runs an AI powered reality check on your startup idea. Market size, competitors, demand signals, and a brutal honest
               verdict. In 60 seconds.
             </p>
             <div className="mt-10 flex flex-col items-center gap-3">
               <Link
                 href={ctaHref}
-                className="inline-flex flex-col items-center rounded-xl bg-orange-500 px-10 py-4 shadow-lg shadow-orange-900/40 transition-colors hover:bg-orange-400"
+                className="inline-flex flex-col items-center rounded-xl bg-blue-600 px-10 py-4 shadow-lg shadow-blue-900/40 transition-colors hover:bg-blue-700"
               >
                 <span className="text-base font-bold text-white">Check My Idea</span>
-                <span className="text-xs font-normal text-orange-100/80">$5 per report</span>
               </Link>
               <p className="text-sm text-slate-500">
                 No subscription required. Pay once, get your verdict.
@@ -108,7 +108,7 @@ export default async function Home() {
                 },
               ].map(({ step, text }) => (
                 <li key={step} className="flex flex-col items-center text-center sm:items-start sm:text-left">
-                  <span className="mb-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-500 text-sm font-bold text-white">
+                  <span className="mb-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
                     {step}
                   </span>
                   <p className="text-slate-300 leading-relaxed">{text}</p>
@@ -194,24 +194,24 @@ export default async function Home() {
                     "No commitment",
                   ].map((item) => (
                     <li key={item} className="flex items-center gap-2">
-                      <span className="text-orange-400">✓</span> {item}
+                      <span className="text-blue-400">✓</span> {item}
                     </li>
                   ))}
                 </ul>
                 <Link
                   href={ctaHref}
-                  className="mt-auto rounded-lg border border-orange-500 px-5 py-3 text-center text-sm font-semibold text-orange-400 transition-colors hover:bg-orange-500/10"
+                  className="mt-auto rounded-lg border border-blue-600 px-5 py-3 text-center text-sm font-semibold text-blue-400 transition-colors hover:bg-blue-600/10"
                 >
                   Get started
                 </Link>
               </div>
 
               {/* Unlimited — highlighted */}
-              <div className="relative flex flex-col rounded-xl border border-orange-500 bg-slate-800 p-8 shadow-xl shadow-orange-900/30">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-orange-500 px-3 py-0.5 text-xs font-semibold text-white">
+              <div className="relative flex flex-col rounded-xl border border-blue-600 bg-slate-800 p-8 shadow-xl shadow-blue-900/30">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-3 py-0.5 text-xs font-semibold text-white">
                   Most popular
                 </div>
-                <p className="mb-1 text-sm font-medium uppercase tracking-widest text-orange-400">
+                <p className="mb-1 text-sm font-medium uppercase tracking-widest text-blue-400">
                   Unlimited
                 </p>
                 <div className="mb-6 mt-3 flex items-end gap-1">
@@ -226,13 +226,13 @@ export default async function Home() {
                     "Early access to new features",
                   ].map((item) => (
                     <li key={item} className="flex items-center gap-2">
-                      <span className="text-orange-400">✓</span> {item}
+                      <span className="text-blue-400">✓</span> {item}
                     </li>
                   ))}
                 </ul>
                 <Link
                   href={ctaHref}
-                  className="mt-auto rounded-lg bg-orange-500 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-orange-400"
+                  className="mt-auto rounded-lg bg-blue-600 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-blue-700"
                 >
                   Start unlimited
                 </Link>

@@ -6,25 +6,35 @@ import { HypeCheckReport } from '@/lib/types'
 import ReportView from '@/components/report/ReportView'
 import ShareButton from '@/components/report/ShareButton'
 
-const getReportBySlug = cache(async (slug: string): Promise<HypeCheckReport | null> => {
+interface ReportResult {
+  report: HypeCheckReport
+  userId: string
+}
+
+const getReportBySlug = cache(async (slug: string): Promise<ReportResult | null> => {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('reports')
-    .select('report_data')
+    .select('report_data, user_id')
     .eq('slug', slug)
     .single()
 
   if (error || !data) return null
-  return data.report_data as HypeCheckReport
+  return {
+    report: data.report_data as HypeCheckReport,
+    userId: data.user_id as string,
+  }
 })
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const report = await getReportBySlug(slug)
+  const result = await getReportBySlug(slug)
 
-  if (!report) {
+  if (!result) {
     return { title: 'Report not found · HypeCheck' }
   }
+
+  const { report } = result
 
   return {
     title: `${report.ideaTitle} — Hype Score ${report.hypeScore}/100 · HypeCheck`,
@@ -48,11 +58,18 @@ export default async function PublicReportPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const report = await getReportBySlug(slug)
+  const result = await getReportBySlug(slug)
 
-  if (!report) {
+  if (!result) {
     notFound()
   }
+
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  const { report, userId } = result
+  const isOwner = user?.id === userId
 
   return (
     <main className="min-h-screen bg-[#0A0A0A] px-4 py-12">
@@ -60,9 +77,9 @@ export default async function PublicReportPage({
         <div className="flex items-center justify-between gap-2">
           <Link
             href="/check"
-            className="text-[13px] text-[#7C3AED] hover:text-[#A78BFA] transition-colors"
+            className="rounded-lg border border-[#2563EB]/30 bg-[#2563EB]/10 px-3 py-2 text-[13px] font-semibold text-[#60A5FA] transition-colors hover:border-[#2563EB]/50 hover:bg-[#2563EB]/20 hover:text-[#93C5FD]"
           >
-            ✨ Validate your own idea →
+            {isOwner ? '⚡ Validate another idea' : '✨ Validate your idea →'}
           </Link>
           <ShareButton ideaTitle={report.ideaTitle} hypeScore={report.hypeScore} />
         </div>

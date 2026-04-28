@@ -9,7 +9,7 @@ export default function NextStep({
 }) {
   return (
     <SectionCard title="Recommended Next Step">
-      <div className="rounded-lg border border-[#7C3AED]/30 bg-[#7C3AED]/5 px-5 py-4">
+      <div className="rounded-lg border border-[#2563EB]/30 bg-[#2563EB]/5 px-5 py-4">
         <p className="text-[15px] font-semibold leading-relaxed text-[#F5F5F5]">
           {action}
         </p>

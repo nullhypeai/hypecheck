@@ -26,7 +26,7 @@ export default function ReportPage() {
     return (
       <main className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#2A2A2A] border-t-[#7C3AED]" />
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#2A2A2A] border-t-[#2563EB]" />
           <p className="text-[13px] text-[#555555]">Loading your report...</p>
         </div>
       </main>

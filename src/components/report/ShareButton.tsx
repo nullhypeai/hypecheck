@@ -33,13 +33,13 @@ export default function ShareButton({
     <div className="flex gap-2 self-end">
       <button
         onClick={handleCopy}
-        className="rounded-md border border-[#2A2A2A] bg-[#161616] px-3 py-1.5 text-[13px] text-[#F5F5F5] hover:border-[#7C3AED] transition-colors"
+        className="rounded-md border border-[#2A2A2A] bg-[#161616] px-3 py-1.5 text-[13px] text-[#F5F5F5] hover:border-[#2563EB] transition-colors"
       >
         {copied ? '✓ Copied' : 'Copy link'}
       </button>
       <button
         onClick={handleShareOnX}
-        className="rounded-md bg-[#7C3AED] px-3 py-1.5 text-[13px] text-white hover:bg-[#6D28D9] transition-colors"
+        className="rounded-md bg-[#2563EB] px-3 py-1.5 text-[13px] text-white hover:bg-[#1D4ED8] transition-colors"
       >
         Share on 𝕏
       </button>

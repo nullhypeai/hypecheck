@@ -76,7 +76,7 @@ export default function CheckPage() {
         {/* Header */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex flex-col gap-3">
-            <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#555555]">
+            <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#999999]">
               NullHype AI
             </p>
             <h1 className="text-3xl font-semibold text-[#F5F5F5]">
@@ -84,19 +84,19 @@ export default function CheckPage() {
             </h1>
             <p className="text-[15px] leading-relaxed text-[#888888]">
               Describe your startup or side project idea. Get a brutally honest
-              AI-generated validation report in seconds.
+              AI generated validation report in seconds.
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-4 mt-1">
             <Link
               href="/reports"
-              className="text-[13px] text-[#555555] hover:text-[#F5F5F5] transition-colors"
+              className="text-[13px] text-[#888888] hover:text-[#F5F5F5] transition-colors"
             >
               My reports
             </Link>
             <button
               onClick={handleSignOut}
-              className="text-[13px] text-[#555555] hover:text-[#F5F5F5] transition-colors"
+              className="text-[13px] text-[#888888] hover:text-[#F5F5F5] transition-colors"
             >
               Sign out
             </button>
@@ -124,14 +124,14 @@ export default function CheckPage() {
                 w-full resize-none rounded-xl border border-[#2A2A2A] bg-[#111111]
                 px-5 py-4 text-[15px] leading-relaxed text-[#F5F5F5]
                 placeholder:text-[#333333]
-                focus:border-[#7C3AED] focus:outline-none focus:ring-1 focus:ring-[#7C3AED]/50
+                focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]/50
                 disabled:opacity-50
                 transition-colors duration-200
               "
             />
             <div className="flex items-center justify-between">
               <p className="text-[12px] text-[#555555]">
-                Be specific — the more detail you give, the better the report.
+                Be specific. The more details you give, the better the report.
               </p>
               <p
                 className={`text-[12px] ${
@@ -154,12 +154,17 @@ export default function CheckPage() {
           <button
             type="submit"
             disabled={!isValid || loading}
-            className="
+            className={`
               flex items-center justify-center gap-3 rounded-xl
-              bg-[#7C3AED] px-6 py-4 text-[15px] font-semibold text-white
-              hover:bg-[#6D28D9] disabled:opacity-40 disabled:cursor-not-allowed
-              transition-colors duration-200
-            "
+              px-6 py-4 text-[15px] font-semibold text-white
+              disabled:cursor-not-allowed
+              transition-all duration-300
+              ${
+                loading
+                  ? 'bg-[#EA580C] hover:bg-[#EA580C]'
+                  : 'bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-40'
+              }
+            `}
           >
             {loading ? (
               <>
@@ -167,7 +172,7 @@ export default function CheckPage() {
                 Analysing your idea...
               </>
             ) : (
-              'Run HypeCheck →'
+              'Run HypeCheck'
             )}
           </button>
         </form>
@@ -180,7 +185,7 @@ export default function CheckPage() {
             'Actionable next steps',
           ].map((signal) => (
             <div key={signal} className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#7C3AED]" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[#2563EB]" />
               <p className="text-[13px] text-[#555555]">{signal}</p>
             </div>
           ))}
