@@ -12,9 +12,8 @@ interface WebhookPayload {
   data: {
     metadata?: {
       supabase_user_id?: string
-    }
-    customer?: {
-      customer_id?: string
+      tier?: string
+      credits?: string
     }
     [key: string]: unknown
   }
@@ -41,41 +40,41 @@ export async function POST(req: NextRequest) {
 
     if (payload.type === 'payment.succeeded') {
       const userId = payload.data.metadata?.supabase_user_id
+      const credits = parseInt(payload.data.metadata?.credits ?? '1', 10)
 
       if (userId) {
-        const { error } = await supabase
+        // Atomically add credits using Supabase RPC or raw increment
+        const { data: profile, error: fetchError } = await supabase
+          .from('profiles')
+          .select('report_credits')
+          .eq('id', userId)
+          .single()
+
+        if (fetchError || !profile) {
+          console.error('Error fetching profile:', fetchError)
+          return NextResponse.json(
+            { error: 'User not found' },
+            { status: 500 }
+          )
+        }
+
+        const { error: updateError } = await supabase
           .from('profiles')
           .update({
-            plan: 'pro',
+            report_credits: profile.report_credits + credits,
             updated_at: new Date().toISOString(),
           })
           .eq('id', userId)
 
-        if (error) {
-          console.error('Error updating profile to pro:', error)
+        if (updateError) {
+          console.error('Error adding credits:', updateError)
           return NextResponse.json(
             { error: 'Database update failed' },
             { status: 500 }
           )
         }
 
-        console.log('User upgraded to pro:', userId)
-      }
-    }
-
-    if (payload.type === 'subscription.cancelled') {
-      const userId = payload.data.metadata?.supabase_user_id
-
-      if (userId) {
-        await supabase
-          .from('profiles')
-          .update({
-            plan: 'free',
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', userId)
-
-        console.log('User downgraded to free:', userId)
+        console.log(`Added ${credits} credits to user ${userId}`)
       }
     }
 

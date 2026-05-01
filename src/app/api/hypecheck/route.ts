@@ -82,22 +82,27 @@ export async function POST(request: NextRequest) {
     // ── Usage gate ──────────────────────────────────────────────────────────
     const { data: profile } = await supabase
       .from('profiles')
-      .select('plan')
+      .select('report_credits')
       .eq('id', user.id)
       .single()
 
-    if (profile?.plan !== 'pro') {
-      const { count } = await supabase
-        .from('reports')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id)
+    const reportCredits = profile?.report_credits ?? 0
 
-      if ((count ?? 0) >= 3) {
-        return NextResponse.json(
-          { error: 'FREE_TIER_EXHAUSTED' },
-          { status: 403 }
-        )
-      }
+    // Count how many free reports the user has already used
+    const { count } = await supabase
+      .from('reports')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+
+    const reportsUsed = count ?? 0
+    const hasFreeTier = reportsUsed < 3
+    const hasPaidCredits = reportCredits > 0
+
+    if (!hasFreeTier && !hasPaidCredits) {
+      return NextResponse.json(
+        { error: 'FREE_TIER_EXHAUSTED' },
+        { status: 403 }
+      )
     }
 
     // ── Input validation ────────────────────────────────────────────────────
@@ -159,9 +164,23 @@ export async function POST(request: NextRequest) {
 
     if (insertError) {
       console.error('Failed to save report to Supabase:', insertError)
-      // Still return the report so the user sees their analysis,
-      // but skip the slug since it's not actually persisted.
       return NextResponse.json({ report })
+    }
+
+    // Deduct one paid credit if the user was past free tier
+    if (!hasFreeTier && hasPaidCredits) {
+      const { error: creditError } = await supabase
+        .from('profiles')
+        .update({
+          report_credits: reportCredits - 1,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', user.id)
+
+      if (creditError) {
+        console.error('Failed to deduct credit:', creditError)
+        // Report already saved — don't fail the request, just log
+      }
     }
 
     return NextResponse.json({ report, slug })

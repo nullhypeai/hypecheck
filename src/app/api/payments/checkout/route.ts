@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import DodoPayments from 'dodopayments'
 
 const dodo = new DodoPayments({
@@ -7,7 +7,18 @@ const dodo = new DodoPayments({
   environment: 'test_mode',
 })
 
-export async function POST() {
+const PRODUCTS = {
+  single: {
+    product_id: process.env.DODO_PRODUCT_ID_SINGLE!,
+    credits: 1,
+  },
+  pack: {
+    product_id: process.env.DODO_PRODUCT_ID_PACK!,
+    credits: 10,
+  },
+} as const
+
+export async function POST(req: NextRequest) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -16,7 +27,10 @@ export async function POST() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Create a Dodo Payments checkout session
+    const body = await req.json().catch(() => ({}))
+    const tier = body.tier === 'pack' ? 'pack' : 'single'
+    const product = PRODUCTS[tier]
+
     const session = await dodo.payments.create({
       billing: {
         city: '',
@@ -31,14 +45,16 @@ export async function POST() {
       },
       product_cart: [
         {
-          product_id: process.env.DODO_PRODUCT_ID!,
+          product_id: product.product_id,
           quantity: 1,
         },
       ],
       payment_link: true,
-      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/check?upgraded=true`,
+      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/check?purchased=true`,
       metadata: {
         supabase_user_id: user.id,
+        tier: tier,
+        credits: String(product.credits),
       },
     })
 
