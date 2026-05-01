@@ -173,25 +173,28 @@ export default async function Home() {
         {/* ── Pricing ────────────────────────────────────────────────── */}
         <section className="border-t border-slate-800 bg-slate-900 px-6 py-20">
           <div className="mx-auto max-w-3xl">
-            <h2 className="mb-12 text-center text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            <h2 className="mb-4 text-center text-2xl font-bold tracking-tight text-white sm:text-3xl">
               Simple pricing
             </h2>
+            <p className="mb-12 text-center text-sm text-slate-400">
+              One-time payments. No recurring plans. No recurring charges.
+            </p>
             <div className="grid gap-6 sm:grid-cols-2">
-              {/* Pay as you go */}
+              {/* Single report */}
               <div className="flex flex-col rounded-xl border border-slate-700 bg-slate-800 p-8">
                 <p className="mb-1 text-sm font-medium uppercase tracking-widest text-slate-400">
-                  Pay as you go
+                  Single report
                 </p>
                 <div className="mb-6 mt-3 flex items-end gap-1">
                   <span className="text-4xl font-extrabold text-white">$5</span>
-                  <span className="mb-1 text-slate-400">/ report</span>
+                  <span className="mb-1 text-slate-400">one-time</span>
                 </div>
                 <ul className="mb-8 flex flex-col gap-3 text-sm text-slate-300">
                   {[
                     "Full HypeCheck report",
                     "Hype Score + verdict",
+                    "Competitor analysis",
                     "Shareable link",
-                    "No commitment",
                   ].map((item) => (
                     <li key={item} className="flex items-center gap-2">
                       <span className="text-blue-400">✓</span> {item}
@@ -206,24 +209,24 @@ export default async function Home() {
                 </Link>
               </div>
 
-              {/* Unlimited — highlighted */}
+              {/* 10 report pack — highlighted */}
               <div className="relative flex flex-col rounded-xl border border-blue-600 bg-slate-800 p-8 shadow-xl shadow-blue-900/30">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-3 py-0.5 text-xs font-semibold text-white">
-                  Most popular
+                  Best value
                 </div>
                 <p className="mb-1 text-sm font-medium uppercase tracking-widest text-blue-400">
-                  Unlimited
+                  10 report pack
                 </p>
                 <div className="mb-6 mt-3 flex items-end gap-1">
-                  <span className="text-4xl font-extrabold text-white">$15</span>
-                  <span className="mb-1 text-slate-400">/ month</span>
+                  <span className="text-4xl font-extrabold text-white">$8.99</span>
+                  <span className="mb-1 text-slate-400">one-time</span>
                 </div>
                 <ul className="mb-8 flex flex-col gap-3 text-sm text-slate-300">
                   {[
-                    "Unlimited reports",
-                    "Everything in Pay as you go",
-                    "Priority processing",
-                    "Early access to new features",
+                    "10 full reports",
+                    "Everything in single report",
+                    "$0.90 per report",
+                    "No expiry",
                   ].map((item) => (
                     <li key={item} className="flex items-center gap-2">
                       <span className="text-blue-400">✓</span> {item}
@@ -234,7 +237,7 @@ export default async function Home() {
                   href={ctaHref}
                   className="mt-auto rounded-lg bg-blue-600 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-blue-700"
                 >
-                  Start unlimited
+                  Buy 10 reports
                 </Link>
               </div>
             </div>
