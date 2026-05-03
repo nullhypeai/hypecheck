@@ -75,7 +75,7 @@ export default function CheckPage() {
 
         {/* Header */}
         <div className="flex items-start justify-between gap-4">
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 text-center">
             <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#999999]">
               NullHype AI
             </p>
@@ -108,7 +108,7 @@ export default function CheckPage() {
           <div className="flex flex-col gap-2">
             <label
               htmlFor="idea"
-              className="text-[12px] font-semibold uppercase tracking-wider text-[#555555]"
+              className="text-center text-[12px] font-semibold uppercase tracking-wider text-[#555555]"
             >
               Your Idea
             </label>
