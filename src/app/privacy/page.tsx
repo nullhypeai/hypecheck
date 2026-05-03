@@ -38,6 +38,13 @@ export default function PrivacyPage() {
               by your OAuth provider.
             </p>
             <p className="mb-2">
+              When you sign in using Google or GitHub, we collect and store your email address.
+              We may use your email to send you transactional messages (such as report delivery
+              confirmations), product updates, and occasional announcements about new features.
+              You can request deletion of your account and associated email at any time by
+              contacting hello@nullhype.tech.
+            </p>
+            <p className="mb-2">
               <span className="text-[#F5F5F5] font-medium">Idea submissions:</span> The text
               you enter when requesting a HypeCheck report. This is stored so you can access
               your report history.

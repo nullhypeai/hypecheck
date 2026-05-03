@@ -15,12 +15,12 @@ export default async function Home() {
       {/* ── Sticky Nav ─────────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-3 py-3 sm:px-6 sm:py-4">
-          <span className="text-xs font-semibold tracking-tight text-white sm:text-sm">
-            HypeCheck{" "}
+          <Link href="/" className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+            ⚡ HypeCheck{" "}
             <span className="hidden font-normal text-slate-400 sm:inline">
               by NullHype AI
             </span>
-          </span>
+          </Link>
           <div className="flex items-center gap-2 sm:gap-6">
             {user ? (
               <>
@@ -79,9 +79,6 @@ export default async function Home() {
               >
                 <span className="text-base font-bold text-white">Check My Idea</span>
               </Link>
-              <p className="text-sm text-slate-500">
-                No subscription required. Pay once, get your verdict.
-              </p>
             </div>
           </div>
         </section>
