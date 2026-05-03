@@ -253,6 +253,15 @@ export default async function Home() {
         >
           Open source on GitHub
         </a>
+        <div className="mt-3 flex justify-center gap-2 text-xs text-slate-600">
+          <Link href="/privacy" className="transition-colors hover:text-slate-400">
+            Privacy Policy
+          </Link>
+          <span>·</span>
+          <Link href="/terms" className="transition-colors hover:text-slate-400">
+            Terms of Service
+          </Link>
+        </div>
       </footer>
     </div>
   );

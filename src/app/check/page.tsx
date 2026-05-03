@@ -191,6 +191,15 @@ export default function CheckPage() {
           ))}
         </div>
       </div>
+      <footer className="py-6 text-center text-xs text-[#555555]">
+        <Link href="/privacy" className="transition-colors hover:text-[#888888]">
+          Privacy Policy
+        </Link>
+        <span className="mx-2">·</span>
+        <Link href="/terms" className="transition-colors hover:text-[#888888]">
+          Terms of Service
+        </Link>
+      </footer>
     </main>
   )
 }
