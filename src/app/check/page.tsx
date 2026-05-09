@@ -74,8 +74,8 @@ export default function CheckPage() {
       <div className="mx-auto flex max-w-[720px] flex-col gap-8">
 
         {/* Header */}
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex flex-col gap-3 text-center">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+          <div className="flex flex-1 flex-col gap-3 text-center sm:pr-4">
             <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#999999]">
               NullHype AI
             </p>
@@ -87,7 +87,7 @@ export default function CheckPage() {
               AI generated validation report in seconds.
             </p>
           </div>
-          <div className="flex shrink-0 items-center gap-4 mt-1">
+          <div className="mt-1 flex shrink-0 items-center justify-center gap-4 sm:justify-end">
             <Link
               href="/reports"
               className="text-[13px] text-[#888888] hover:text-[#F5F5F5] transition-colors"

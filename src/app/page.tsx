@@ -69,7 +69,7 @@ export default async function Home() {
               <span className="text-blue-400">nobody wants.</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-400">
-              HypeCheck runs an AI powered reality check on your startup idea. Market size, competitors, demand signals, and a brutal honest
+              HypeCheck runs an AI powered reality check on your startup idea. Market size, competitors, demand signals, and a brutally honest
               verdict. In 60 seconds.
             </p>
             <div className="mt-10 flex flex-col items-center gap-3">

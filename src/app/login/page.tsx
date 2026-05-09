@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
@@ -26,7 +27,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0A0A0A] flex items-center justify-center px-4">
+    <main className="min-h-screen bg-[#0A0A0A] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-[400px] flex flex-col gap-8">
 
         {/* Header */}
@@ -110,8 +111,15 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-[12px] text-[#555555]">
-          By signing in you agree to our terms of service
+        <p className="text-center text-[12px] leading-relaxed text-[#555555]">
+          By signing in you agree to our{' '}
+          <Link href="/terms" className="underline underline-offset-2 transition-colors hover:text-[#888888]">
+            Terms of Service
+          </Link>
+          {' '}and{' '}
+          <Link href="/privacy" className="underline underline-offset-2 transition-colors hover:text-[#888888]">
+            Privacy Policy
+          </Link>
         </p>
       </div>
     </main>

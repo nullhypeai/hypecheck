@@ -36,18 +36,18 @@ export function UpgradePrompt({ onClose }: UpgradePromptProps) {
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-[#111111] border border-[#2A2A2A] rounded-2xl p-8 max-w-lg w-full text-center shadow-2xl">
+      <div className="bg-[#111111] border border-[#2A2A2A] rounded-2xl p-6 sm:p-8 max-w-lg max-h-[calc(100vh-2rem)] overflow-y-auto w-full text-center shadow-2xl">
 
         <div className="text-5xl mb-4">⚡</div>
 
         <h2 className="text-2xl font-bold text-[#F5F5F5] mb-2">
-          You've used your 3 free reports
+          You&apos;ve used your 3 free reports
         </h2>
         <p className="text-[#999999] mb-6">
           Buy more reports — one-time payment, no recurring plans, no recurring charges.
         </p>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid gap-4 mb-6 sm:grid-cols-2">
           {/* Single report */}
           <div className="bg-[#0F0F0F] border border-[#222222] rounded-xl p-5 flex flex-col items-center">
             <div className="text-3xl font-bold text-[#F5F5F5]">$5</div>
