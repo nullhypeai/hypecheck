@@ -26,16 +26,19 @@ HypeCheck is a brutally honest AI analyst for startup ideas built by NullHype AI
 - **Monetization Viability** — whether your pricing model holds up under scrutiny
 - **Founder Fit Assessment** — an honest read on whether this idea matches the team behind it
 - **Shareable Reports** — every report gets a public link you can send to co-founders or investors
-- **Report History** — unlimited subscribers can revisit past reports any time
+- **Report History** — signed-in users can revisit past reports any time
 
 ---
 
 ## Pricing
 
-| Plan | Price | What you get |
+| Option | Price | What you get |
 |---|---|---|
-| Pay-per-report | **$5 / report** | One full HypeCheck report, shareable link included |
-| Unlimited | **$15 / month** | Unlimited reports, full history, priority processing |
+| Free tier | **$0** | 3 reports per account |
+| Single report | **$5 one-time** | 1 additional report credit |
+| 10 report pack | **$8.99 one-time** | 10 additional report credits |
+
+No subscriptions. No recurring charges. Purchased credits never expire and are tied to your account.
 
 ---
 
@@ -47,14 +50,14 @@ HypeCheck is a brutally honest AI analyst for startup ideas built by NullHype AI
 | Styling | [Tailwind CSS](https://tailwindcss.com) |
 | Database & Auth | [Supabase](https://supabase.com) |
 | AI | [Claude API](https://www.anthropic.com) (Anthropic) |
-| Payments | [Stripe](https://stripe.com) |
+| Payments | [Dodo Payments](https://dodopayments.com) |
 | Hosting | [Vercel](https://vercel.com) |
 
 ---
 
 ## Running Locally
 
-**Prerequisites:** Node.js 18+, a Supabase project, an Anthropic API key, and a Stripe account.
+**Prerequisites:** Node.js 18+, a Supabase project, an Anthropic API key, and a Dodo Payments account.
 
 ```bash
 # 1. Clone the repo
@@ -88,10 +91,13 @@ SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 # Anthropic
 ANTHROPIC_API_KEY=your_anthropic_api_key
 
-# Stripe
-STRIPE_SECRET_KEY=your_stripe_secret_key
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
-STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
+# Dodo Payments
+DODO_SECRET_KEY=your_dodo_secret_key
+NEXT_PUBLIC_DODO_PUBLISHABLE_KEY=your_dodo_publishable_key
+DODO_PRODUCT_ID_SINGLE=your_dodo_single_report_product_id
+DODO_PRODUCT_ID_PACK=your_dodo_10_pack_product_id
+DODO_WEBHOOK_SECRET=your_dodo_webhook_secret
+DODO_ENVIRONMENT=test_mode
 
 # App
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -102,9 +108,9 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ## Roadmap
 
 - [x] Core report generation with Claude
-- [x] Pay-per-report via Stripe
-- [x] Monthly unlimited subscription tier
+- [x] Credit-based one-time payments via Dodo Payments
 - [x] Shareable public report links
+- [x] Report history dashboard
 - [ ] Batch idea submission (compare multiple ideas side-by-side)
 - [ ] Slack / email delivery of reports
 - [ ] API access for power users

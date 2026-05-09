@@ -4,7 +4,7 @@ import DodoPayments from 'dodopayments'
 
 const dodo = new DodoPayments({
   bearerToken: process.env.DODO_SECRET_KEY!,
-  environment: 'test_mode',
+  environment: process.env.DODO_ENVIRONMENT === 'test_mode' ? 'test_mode' : 'live_mode',
 })
 
 const PRODUCTS = {
