@@ -42,7 +42,7 @@ export default function CheckPage() {
 
       const data = await response.json()
 
-      // Free tier exhausted — show upgrade modal instead of error message
+      // Free tier exhausted. Show upgrade modal instead of error message.
       if (response.status === 403 && data.error === 'FREE_TIER_EXHAUSTED') {
         setShowUpgradePrompt(true)
         setLoading(false)
@@ -66,7 +66,7 @@ export default function CheckPage() {
   return (
     <main className="min-h-screen bg-[#0A0A0A] px-4 py-12">
 
-      {/* Upgrade modal — renders on top of everything when free tier is exhausted */}
+      {/* Upgrade modal renders on top of everything when free tier is exhausted */}
       {showUpgradePrompt && (
         <UpgradePrompt onClose={() => setShowUpgradePrompt(false)} />
       )}

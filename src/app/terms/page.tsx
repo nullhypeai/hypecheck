@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Terms of Service — HypeCheck",
+  title: "Terms of Service - HypeCheck",
 };
 
 export default function TermsPage() {
@@ -33,7 +33,7 @@ export default function TermsPage() {
             <h2 className="mb-3 text-lg font-semibold text-[#F5F5F5]">Accounts</h2>
             <p>
               You sign in using Google or GitHub OAuth. You are responsible for maintaining
-              access to your OAuth account. One account per person — do not create multiple
+              access to your OAuth account. One account per person. Do not create multiple
               accounts to abuse the free tier.
             </p>
           </section>
@@ -42,7 +42,7 @@ export default function TermsPage() {
             <h2 className="mb-3 text-lg font-semibold text-[#F5F5F5]">Free tier and payments</h2>
             <p>
               Every account receives 3 free reports. Additional reports can be purchased
-              as one-time payments — there are no subscriptions or recurring charges. Payments
+              as one-time payments. There are no subscriptions or recurring charges. Payments
               are processed by Dodo Payments. All purchases are final and non-refundable,
               as the AI analysis is delivered immediately upon purchase. If you experience a
               technical issue that prevents report delivery, contact us for a resolution.
@@ -83,7 +83,7 @@ export default function TermsPage() {
             <h2 className="mb-3 text-lg font-semibold text-[#F5F5F5]">Shareable reports</h2>
             <p>
               When you share a report link, anyone with that link can view the full report
-              including the idea description and analysis. Sharing is your choice — we do not
+              including the idea description and analysis. Sharing is your choice. We do not
               publish or distribute your reports without your action.
             </p>
           </section>

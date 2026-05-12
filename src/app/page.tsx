@@ -126,7 +126,7 @@ export default async function Home() {
                 {
                   icon: "📊",
                   title: "Hype Score",
-                  desc: "0–100 viability verdict so you know exactly where your idea stands.",
+                  desc: "0 to 100 viability verdict so you know exactly where your idea stands.",
                 },
                 {
                   icon: "🔍",
@@ -206,7 +206,7 @@ export default async function Home() {
                 </Link>
               </div>
 
-              {/* 10 report pack — highlighted */}
+              {/* 10 report pack, highlighted */}
               <div className="relative flex flex-col rounded-xl border border-blue-600 bg-slate-800 p-8 shadow-xl shadow-blue-900/30">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-3 py-0.5 text-xs font-semibold text-white">
                   Best value

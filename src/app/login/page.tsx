@@ -98,7 +98,7 @@ export default function LoginPage() {
           {/* Divider */}
           <div className="flex items-center gap-3 my-1">
             <div className="h-px flex-1 bg-[#2A2A2A]" />
-            <p className="text-[11px] text-[#555555]">secure OAuth — no password needed</p>
+            <p className="text-[11px] text-[#555555]">Secure OAuth. No password needed.</p>
             <div className="h-px flex-1 bg-[#2A2A2A]" />
           </div>
 

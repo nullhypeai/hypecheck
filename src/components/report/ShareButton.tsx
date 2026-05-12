@@ -18,7 +18,7 @@ export default function ShareButton({
       setTimeout(() => setCopied(false), 2000)
     } catch {
       // Clipboard API can fail in non-HTTPS or some browser contexts.
-      // Silently no-op — the X share button still works as a fallback.
+      // Silently no-op. The X share button still works as a fallback.
     }
   }
 

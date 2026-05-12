@@ -44,16 +44,18 @@ export function UpgradePrompt({ onClose }: UpgradePromptProps) {
           You&apos;ve used your 3 free reports
         </h2>
         <p className="text-[#999999] mb-6">
-          Buy more reports — one-time payment, no recurring plans, no recurring charges.
+          One-time payments. No recurring plans. No recurring charges.
         </p>
 
         <div className="grid gap-4 mb-6 sm:grid-cols-2">
           {/* Single report */}
           <div className="bg-[#0F0F0F] border border-[#222222] rounded-xl p-5 flex flex-col items-center">
             <div className="text-3xl font-bold text-[#F5F5F5]">$5</div>
-            <div className="text-[#999999] text-sm mt-1">1 report</div>
+            <div className="text-[#999999] text-sm mt-1">Single report</div>
+            <div className="text-[#777777] text-xs mt-1">one-time</div>
             <ul className="text-[#888888] text-xs mt-3 space-y-1 text-left">
-              <li>✓ Full validation report</li>
+              <li>✓ Full HypeCheck report</li>
+              <li>✓ Hype Score + verdict</li>
               <li>✓ Competitor analysis</li>
               <li>✓ Shareable link</li>
             </ul>
@@ -69,14 +71,16 @@ export function UpgradePrompt({ onClose }: UpgradePromptProps) {
           {/* 10-pack */}
           <div className="bg-[#0F0F0F] border border-[#2563EB] rounded-xl p-5 flex flex-col items-center relative">
             <div className="absolute -top-3 bg-[#2563EB] text-white text-xs font-bold px-3 py-1 rounded-full">
-              BEST VALUE
+              Best value
             </div>
             <div className="text-3xl font-bold text-[#F5F5F5]">$8.99</div>
-            <div className="text-[#999999] text-sm mt-1">10 reports</div>
+            <div className="text-[#999999] text-sm mt-1">10 report pack</div>
+            <div className="text-[#777777] text-xs mt-1">one-time</div>
             <ul className="text-[#888888] text-xs mt-3 space-y-1 text-left">
-              <li>✓ Everything in single</li>
-              <li>✓ 10x the reports</li>
+              <li>✓ 10 full reports</li>
+              <li>✓ Everything in single report</li>
               <li>✓ $0.90 per report</li>
+              <li>✓ No expiry</li>
             </ul>
             <button
               onClick={() => handlePurchase('pack')}
@@ -102,7 +106,7 @@ export function UpgradePrompt({ onClose }: UpgradePromptProps) {
         )}
 
         <p className="text-[#555555] text-xs mt-4">
-          One-time payment · No subscriptions · Secure checkout via Dodo Payments
+          One-time payments. No recurring plans. Secure checkout via Dodo Payments.
         </p>
       </div>
     </div>

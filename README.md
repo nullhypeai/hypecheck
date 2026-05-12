@@ -5,7 +5,7 @@
 
 **An AI-powered hype filter for startup ideas.**
 
-Got a startup idea? HypeCheck cuts through the noise — it stress-tests your concept against market reality, identifies blindspots, and tells you whether you're sitting on a genuine opportunity or a well-disguised dead end.
+Got a startup idea? HypeCheck cuts through the noise. It stress-tests your concept against market reality, identifies blindspots, and tells you whether you're sitting on a genuine opportunity or a well-disguised dead end.
 
 **Live at [hypecheck.nullhype.tech](https://hypecheck.nullhype.tech)**
 
@@ -13,20 +13,20 @@ Got a startup idea? HypeCheck cuts through the noise — it stress-tests your co
 
 ## What It Is
 
-HypeCheck is a brutally honest AI analyst for startup ideas built by NullHype AI. Submit your idea and receive a structured report covering market size, competitive landscape, execution risk, monetization viability, and an overall hype score. No flattery, no filler — just signal.
+HypeCheck is a brutally honest AI analyst for startup ideas built by NullHype AI. Submit your idea and receive a structured report covering market size, competitive landscape, execution risk, monetization viability, and an overall hype score. No flattery, no filler. Just signal.
 
 ---
 
 ## Features
 
-- **Hype Score** — a single 0–100 verdict on your idea's viability
-- **Market Reality Check** — TAM/SAM estimates grounded in real data, not guesswork
-- **Competitive Teardown** — who already exists, why they might win, and where your opening is
-- **Execution Risk Analysis** — technical, regulatory, and go-to-market landmines flagged upfront
-- **Monetization Viability** — whether your pricing model holds up under scrutiny
-- **Founder Fit Assessment** — an honest read on whether this idea matches the team behind it
-- **Shareable Reports** — every report gets a public link you can send to co-founders or investors
-- **Report History** — signed-in users can revisit past reports any time
+- **Hype Score:** a single 0 to 100 verdict on your idea's viability
+- **Market Reality Check:** TAM/SAM estimates grounded in real data, not guesswork
+- **Competitive Teardown:** who already exists, why they might win, and where your opening is
+- **Execution Risk Analysis:** technical, regulatory, and go-to-market landmines flagged upfront
+- **Monetization Viability:** whether your pricing model holds up under scrutiny
+- **Founder Fit Assessment:** an honest read on whether this idea matches the team behind it
+- **Shareable Reports:** every report gets a public link you can send to co-founders or investors
+- **Report History:** signed-in users can revisit past reports any time
 
 ---
 
@@ -111,10 +111,10 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 - [x] Credit-based one-time payments via Dodo Payments
 - [x] Shareable public report links
 - [x] Report history dashboard
-- [ ] Batch idea submission (compare multiple ideas side-by-side)
+- [ ] Batch idea submission (compare multiple ideas side by side)
 - [ ] Slack / email delivery of reports
 - [ ] API access for power users
-- [ ] Idea tracking — re-run reports over time to watch market shifts
+- [ ] Idea tracking: re-run reports over time to watch market shifts
 - [ ] Team workspaces with shared report libraries
 - [ ] Browser extension for quick idea capture
 

@@ -62,11 +62,11 @@ export default function ReportHeader({
 }: ReportHeaderProps) {
   return (
     <div className="rounded-xl border border-[#2A2A2A] bg-[#111111] px-8 py-10">
-      {/* Score ring — centred hero element */}
+      {/* Score ring, centred hero element */}
       <div className="flex flex-col items-center gap-6">
         <ScoreRing score={hypeScore} />
 
-        {/* Text content — centred below the ring */}
+        {/* Text content, centred below the ring */}
         <div className="flex flex-col items-center gap-3 text-center">
           <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#555555]">
             HypeCheck Report

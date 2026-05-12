@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { HypeCheckReport } from '@/lib/types'
 import ReportView from '@/components/report/ReportView'
 import ShareButton from '@/components/report/ShareButton'
+import { sanitizeDashes } from '@/lib/sanitizeText'
 
 interface ReportResult {
   report: HypeCheckReport
@@ -35,19 +36,21 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   const { report } = result
+  const ideaTitle = sanitizeDashes(report.ideaTitle)
+  const oneLinerSummary = sanitizeDashes(report.oneLinerSummary)
 
   return {
-    title: `${report.ideaTitle} — Hype Score ${report.hypeScore}/100 · HypeCheck`,
-    description: report.oneLinerSummary,
+    title: `${ideaTitle} - Hype Score ${report.hypeScore}/100 · HypeCheck`,
+    description: oneLinerSummary,
     openGraph: {
-      title: `${report.ideaTitle} — Hype Score ${report.hypeScore}/100`,
-      description: report.oneLinerSummary,
+      title: `${ideaTitle} - Hype Score ${report.hypeScore}/100`,
+      description: oneLinerSummary,
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${report.ideaTitle} — Hype Score ${report.hypeScore}/100`,
-      description: report.oneLinerSummary,
+      title: `${ideaTitle} - Hype Score ${report.hypeScore}/100`,
+      description: oneLinerSummary,
     },
   }
 }
@@ -81,7 +84,7 @@ export default async function PublicReportPage({
           >
             {isOwner ? '⚡ Validate another idea' : '✨ Validate your idea →'}
           </Link>
-          <ShareButton ideaTitle={report.ideaTitle} hypeScore={report.hypeScore} />
+          <ShareButton ideaTitle={sanitizeDashes(report.ideaTitle)} hypeScore={report.hypeScore} />
         </div>
 
         <ReportView report={report} />

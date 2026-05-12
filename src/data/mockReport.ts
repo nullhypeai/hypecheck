@@ -15,7 +15,7 @@ export const mockReport: HypeCheckReport = {
       },
       {
         label: 'Growth Signal',
-        insight: 'AI coding tools grew 340% YoY in adoption. GitHub Copilot alone crossed 1.3M paid users — demand is structurally validated.',
+        insight: 'AI coding tools grew 340% YoY in adoption. GitHub Copilot alone crossed 1.3M paid users, so demand is structurally validated.',
         strength: 'strong',
       },
       {
@@ -49,7 +49,7 @@ export const mockReport: HypeCheckReport = {
       },
     ],
     competitiveAdvantage:
-      'Solo developer focus with async, non-blocking review flow is underserved — incumbents are optimised for team workflows.',
+      'Solo developer focus with async, non-blocking review flow is underserved. Incumbents are optimised for team workflows.',
   },
   demandSignals: {
     signals: [
@@ -61,7 +61,7 @@ export const mockReport: HypeCheckReport = {
       },
       {
         quote:
-          'Solo devs who ship fast need async code review. There is no tool built specifically for us — everything assumes a team.',
+          'Solo devs who ship fast need async code review. There is no tool built specifically for us. Everything assumes a team.',
         source: 'r/SideProject',
         platform: 'Reddit',
       },
@@ -80,7 +80,7 @@ export const mockReport: HypeCheckReport = {
     pricingSuggestion:
       'Free tier at 50 reviews/month, Pro at $12/month unlimited, Team at $24/seat/month.',
     keyRisk:
-      'GitHub Copilot bundles basic review features — free tier must be meaningfully better to justify switching cost.',
+      'GitHub Copilot bundles basic review features. Free tier must be meaningfully better to justify switching cost.',
   },
   executionRisk: {
     factors: [
@@ -94,20 +94,20 @@ export const mockReport: HypeCheckReport = {
         factor: 'GitHub Integration Complexity',
         severity: 'Medium',
         mitigation:
-          'Use GitHub Webhooks for PR events — no OAuth complexity needed for the MVP. Full app integration is Phase 2.',
+          'Use GitHub Webhooks for PR events. No OAuth complexity needed for the MVP. Full app integration is Phase 2.',
       },
       {
         factor: 'Distribution Against Incumbents',
         severity: 'High',
         mitigation:
-          'Do not compete on features. Compete on distribution — solo developer X community and r/SideProject are underserved by Copilot marketing.',
+          'Do not compete on features. Compete on distribution. Solo developer X community and r/SideProject are underserved by Copilot marketing.',
       },
     ],
     overallRiskLevel: 'Medium',
   },
   nextStep: {
     action:
-      'Post in r/SideProject with the title "Solo devs — how do you do code review when you have no team?" and measure the response volume and language people use to describe the pain.',
+      'Post in r/SideProject with the title "Solo devs, how do you do code review when you have no team?" and measure the response volume and language people use to describe the pain.',
     rationale:
       'Demand signals exist in training data but real-time validation costs nothing and takes 20 minutes. If the post gets 50+ upvotes, the pain is real and current.',
   },

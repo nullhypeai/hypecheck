@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Privacy Policy — HypeCheck",
+  title: "Privacy Policy - HypeCheck",
 };
 
 export default function PrivacyPage() {
@@ -23,7 +23,7 @@ export default function PrivacyPage() {
             <h2 className="mb-3 text-lg font-semibold text-[#F5F5F5]">Who we are</h2>
             <p>
               HypeCheck is a product by NullHype AI. This policy explains what data we collect,
-              why we collect it, and how we handle it. We believe in minimal data collection —
+              why we collect it, and how we handle it. We believe in minimal data collection.
               we only store what is necessary to provide the service.
             </p>
           </section>
@@ -34,7 +34,7 @@ export default function PrivacyPage() {
             <p className="mb-2">
               <span className="text-[#F5F5F5] font-medium">Account information:</span> Your
               email address and display name, provided by Google or GitHub when you sign in
-              via OAuth. We do not store your password — authentication is handled entirely
+              via OAuth. We do not store your password. Authentication is handled entirely
               by your OAuth provider.
             </p>
             <p className="mb-2">

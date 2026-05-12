@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HypeCheck — AI Startup Idea Validator",
+  title: "HypeCheck - AI Startup Idea Validator",
   description:
-    "Describe your startup idea in plain language. Get a Hype Score, competitor analysis, market sizing, and a Build or Don't Build verdict — powered by AI.",
+    "Describe your startup idea in plain language. Get a Hype Score, competitor analysis, market sizing, and a Build or Don't Build verdict, powered by AI.",
   icons: {
     icon: [
       {
