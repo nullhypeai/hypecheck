@@ -2,6 +2,103 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "./actions";
 
+const faqs = [
+  {
+    question: "What is HypeCheck?",
+    answer:
+      "HypeCheck is an AI startup idea validator that turns a rough idea into a structured report with a Hype Score, competitors, market sizing, risks, monetization viability, demand signals, and a build-or-don't-build verdict.",
+  },
+  {
+    question: "Who is HypeCheck for?",
+    answer:
+      "HypeCheck is for indie hackers, developers, product builders, founders, and small teams who want to stress-test an idea before spending weeks building it.",
+  },
+  {
+    question: "How much does HypeCheck cost?",
+    answer:
+      "Each account gets 3 free reports. After that, one additional report credit costs $5, and a 10 report credit pack costs $8.99.",
+  },
+  {
+    question: "Does HypeCheck require a subscription?",
+    answer:
+      "No. HypeCheck uses one-time report credits. There are no subscriptions or recurring charges.",
+  },
+  {
+    question: "Is HypeCheck open source?",
+    answer:
+      "Yes. HypeCheck is open source, and the public repository is available at github.com/nullhypeai/hypecheck.",
+  },
+  {
+    question: "Does HypeCheck replace customer discovery?",
+    answer:
+      "No. HypeCheck is a fast first-pass reality check. Builders should still validate serious ideas with real customers, landing page tests, pricing experiments, and direct conversations.",
+  },
+];
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "NullHype AI",
+    url: "https://hypecheck.nullhype.tech",
+    sameAs: ["https://x.com/nullhypeai", "https://github.com/nullhypeai/hypecheck"],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "HypeCheck",
+    url: "https://hypecheck.nullhype.tech",
+    description:
+      "Open-source AI reality checks for startup ideas before builders spend weeks building the wrong thing.",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "HypeCheck",
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    url: "https://hypecheck.nullhype.tech",
+    codeRepository: "https://github.com/nullhypeai/hypecheck",
+    description:
+      "HypeCheck turns rough startup ideas into AI validation reports with a Hype Score, competitors, market sizing, risks, monetization viability, demand signals, and a build-or-don't-build verdict.",
+    offers: [
+      {
+        "@type": "Offer",
+        name: "Free tier",
+        price: "0",
+        priceCurrency: "USD",
+        description: "3 reports per account",
+      },
+      {
+        "@type": "Offer",
+        name: "Single report credit",
+        price: "5",
+        priceCurrency: "USD",
+        description: "One additional report credit",
+      },
+      {
+        "@type": "Offer",
+        name: "10 report credit pack",
+        price: "8.99",
+        priceCurrency: "USD",
+        description: "10 additional report credits",
+      },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map(({ question, answer }) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: answer,
+      },
+    })),
+  },
+];
+
 export default async function Home() {
   const supabase = await createClient();
   const {
@@ -12,6 +109,13 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
+      {structuredData.map((entry) => (
+        <script
+          key={entry["@type"]}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(entry) }}
+        />
+      ))}
       {/* ── Sticky Nav ─────────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-3 py-3 sm:px-6 sm:py-4">
@@ -237,6 +341,28 @@ export default async function Home() {
                   Buy 10 reports
                 </Link>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── FAQ ────────────────────────────────────────────────────── */}
+        <section className="border-t border-slate-800 bg-slate-950 px-6 py-20">
+          <div className="mx-auto max-w-3xl">
+            <h2 className="mb-10 text-center text-2xl font-bold tracking-tight text-white sm:text-3xl">
+              Common questions
+            </h2>
+            <div className="divide-y divide-slate-800 rounded-xl border border-slate-800 bg-slate-900">
+              {faqs.map(({ question, answer }) => (
+                <details key={question} className="group p-6">
+                  <summary className="cursor-pointer list-none text-base font-semibold text-white">
+                    <span>{question}</span>
+                    <span className="float-right text-blue-400 transition-transform group-open:rotate-45">
+                      +
+                    </span>
+                  </summary>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-400">{answer}</p>
+                </details>
+              ))}
             </div>
           </div>
         </section>

@@ -1,0 +1,71 @@
+# HypeCheck
+
+## About
+HypeCheck is an open-source AI startup idea validator by NullHype AI. Builders describe a rough startup idea in plain language and receive a structured validation report with a Hype Score, competitor landscape, market sizing, execution risks, monetization viability, demand signals, and a build-or-don't-build verdict.
+
+HypeCheck is built for indie hackers, developers, product builders, and small teams who want to stress-test an idea before spending weeks building the wrong thing.
+
+## Website
+- Homepage: https://hypecheck.nullhype.tech
+- Start a report: https://hypecheck.nullhype.tech/check
+- Privacy policy: https://hypecheck.nullhype.tech/privacy
+- Terms of service: https://hypecheck.nullhype.tech/terms
+- GitHub: https://github.com/nullhypeai/hypecheck
+- Product Hunt: https://www.producthunt.com/posts/hypecheck
+- X: https://x.com/nullhypeai
+
+## Services and Pricing
+- Free tier: 3 reports per account
+- Single report credit: $5 one-time purchase
+- 10 report credit pack: $8.99 one-time purchase
+- No subscriptions
+- No recurring charges
+- Purchased credits do not expire
+
+## What a Report Includes
+- Hype Score from 0 to 100
+- Build-or-don't-build verdict
+- Market opportunity and market sizing
+- Competitive landscape
+- Execution risk analysis
+- Monetization viability
+- Demand signals
+- Recommended next step
+- Public shareable report URL
+
+## Technology
+HypeCheck is an open-source SaaS built with Next.js, Supabase, Claude, Dodo Payments, and Vercel. It includes authentication, report generation, one-time credit payments, report history, legal pages, and public report sharing.
+
+## Markdown Mirrors
+Clean AI-readable markdown mirrors are available here:
+
+- https://hypecheck.nullhype.tech/index.md
+- https://hypecheck.nullhype.tech/product.md
+
+## Frequently Asked Questions
+
+### What is HypeCheck?
+HypeCheck is an AI startup idea validator that turns a rough idea into a structured report covering market opportunity, competitors, risks, monetization, demand, and a build-or-don't-build verdict.
+
+### Who is HypeCheck for?
+HypeCheck is for indie hackers, developers, product managers, founders, and builders who want a fast reality check before committing time to a startup idea.
+
+### How much does HypeCheck cost?
+Each account gets 3 free reports. After that, a single report credit costs $5, and a 10 report credit pack costs $8.99. Payments are one-time purchases.
+
+### Does HypeCheck require a subscription?
+No. HypeCheck uses one-time report credits. There are no subscriptions or recurring charges.
+
+### Is HypeCheck open source?
+Yes. The public repository is available at https://github.com/nullhypeai/hypecheck.
+
+### Does HypeCheck replace customer discovery?
+No. HypeCheck is designed to catch weak assumptions early. It does not replace customer interviews, landing page tests, or real market validation.
+
+### Can reports be shared?
+Yes. Each report can have a public shareable URL that builders can send to co-founders, friends, investors, or followers.
+
+## Contact
+- Maker/brand: NullHype AI
+- X: https://x.com/nullhypeai
+- GitHub: https://github.com/nullhypeai/hypecheck

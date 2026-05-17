@@ -13,9 +13,27 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://hypecheck.nullhype.tech"),
   title: "HypeCheck - AI Startup Idea Validator",
   description:
     "Describe your startup idea in plain language. Get a Hype Score, competitor analysis, market sizing, and a Build or Don't Build verdict, powered by AI.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "HypeCheck - AI Startup Idea Validator",
+    description:
+      "Open-source AI reality checks for startup ideas. Get a Hype Score, competitors, market sizing, risks, monetization signals, and a build-or-don't-build verdict.",
+    url: "https://hypecheck.nullhype.tech",
+    siteName: "HypeCheck",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "HypeCheck - AI Startup Idea Validator",
+    description:
+      "Open-source AI reality checks for startup ideas. Get 3 free reports, then buy one-time credits. No subscription.",
+  },
   icons: {
     icon: [
       {

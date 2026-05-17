@@ -6,21 +6,29 @@ import { HypeCheckReport } from '@/lib/types'
 import ReportView from '@/components/report/ReportView'
 
 export default function ReportPage() {
-  const [report, setReport] = useState<HypeCheckReport | null>(null)
+  const [report] = useState<HypeCheckReport | null>(() => {
+    if (typeof window === 'undefined') {
+      return null
+    }
+
+    const stored = sessionStorage.getItem('hypecheckReport')
+    if (!stored) {
+      return null
+    }
+
+    try {
+      return JSON.parse(stored)
+    } catch {
+      return null
+    }
+  })
   const router = useRouter()
 
   useEffect(() => {
-    const stored = sessionStorage.getItem('hypecheckReport')
-    if (!stored) {
-      router.push('/check')
-      return
-    }
-    try {
-      setReport(JSON.parse(stored))
-    } catch {
+    if (!report) {
       router.push('/check')
     }
-  }, [router])
+  }, [report, router])
 
   if (!report) {
     return (
