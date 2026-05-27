@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
-import { signOut } from "./actions";
 
 const faqs = [
   {
@@ -99,14 +97,7 @@ const structuredData = [
   },
 ];
 
-export default async function Home() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const ctaHref = user ? "/check" : "/login";
-
+export default function Home() {
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       {structuredData.map((entry) => (
@@ -126,33 +117,14 @@ export default async function Home() {
             </span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-6">
-            {user ? (
-              <>
-                <Link
-                  href="/reports"
-                  className="text-xs text-slate-400 transition-colors hover:text-white sm:text-sm"
-                >
-                  My reports
-                </Link>
-                <form action={signOut}>
-                  <button
-                    type="submit"
-                    className="text-xs text-slate-400 transition-colors hover:text-white sm:text-sm"
-                  >
-                    Sign out
-                  </button>
-                </form>
-              </>
-            ) : (
-              <Link
-                href="/login"
-                className="text-xs text-slate-400 transition-colors hover:text-white sm:text-sm"
-              >
-                Sign in
-              </Link>
-            )}
             <Link
-              href={ctaHref}
+              href="/login"
+              className="text-xs text-slate-400 transition-colors hover:text-white sm:text-sm"
+            >
+              Sign in
+            </Link>
+            <Link
+              href="/check"
               className="rounded-lg bg-blue-600 px-3 py-2 text-center text-xs font-semibold text-white transition-colors hover:bg-blue-700 sm:px-4 sm:text-sm"
             >
               Check My Idea
@@ -178,7 +150,7 @@ export default async function Home() {
             </p>
             <div className="mt-10 flex flex-col items-center gap-3">
               <Link
-                href={ctaHref}
+                href="/check"
                 className="inline-flex flex-col items-center rounded-xl bg-blue-600 px-10 py-4 shadow-lg shadow-blue-900/40 transition-colors hover:bg-blue-700"
               >
                 <span className="text-base font-bold text-white">Check My Idea</span>
@@ -303,7 +275,7 @@ export default async function Home() {
                   ))}
                 </ul>
                 <Link
-                  href={ctaHref}
+                  href="/check"
                   className="mt-auto rounded-lg border border-blue-600 px-5 py-3 text-center text-sm font-semibold text-blue-400 transition-colors hover:bg-blue-600/10"
                 >
                   Get started
@@ -335,7 +307,7 @@ export default async function Home() {
                   ))}
                 </ul>
                 <Link
-                  href={ctaHref}
+                  href="/check"
                   className="mt-auto rounded-lg bg-blue-600 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-blue-700"
                 >
                   Buy 10 reports

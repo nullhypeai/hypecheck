@@ -2,6 +2,18 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl
+  const isProtectedRoute =
+    pathname === '/check' ||
+    pathname === '/report' ||
+    pathname === '/reports' ||
+    pathname.startsWith('/reports/')
+  const isLoginRoute = pathname === '/login'
+
+  if (!isProtectedRoute && !isLoginRoute) {
+    return NextResponse.next()
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -33,18 +45,16 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const { pathname } = request.nextUrl
-
   // Protected routes redirect to login if not authenticated.
   // /report/[slug] is intentionally public; only the bare /report route (sessionStorage flow) requires auth.
-  if (!user && (pathname.startsWith('/check') || pathname === '/report' || pathname.startsWith('/reports'))) {
+  if (!user && isProtectedRoute) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
   // If logged in and trying to access login page, redirect to check.
-  if (user && pathname === '/login') {
+  if (user && isLoginRoute) {
     const url = request.nextUrl.clone()
     url.pathname = '/check'
     return NextResponse.redirect(url)
