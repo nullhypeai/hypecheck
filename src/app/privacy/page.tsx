@@ -16,7 +16,7 @@ export default function PrivacyPage() {
         </Link>
 
         <h1 className="mt-8 text-3xl font-bold text-[#F5F5F5]">Privacy Policy</h1>
-        <p className="mt-2 text-[13px] text-[#555555]">Last updated: May 2026</p>
+        <p className="mt-2 text-[13px] text-[#555555]">Last updated: June 2026</p>
 
         <div className="mt-10 space-y-8 text-[15px] leading-relaxed text-[#999999]">
           <section>
@@ -91,9 +91,12 @@ export default function PrivacyPage() {
           <section>
             <h2 className="mb-3 text-lg font-semibold text-[#F5F5F5]">Cookies and tracking</h2>
             <p>
-              We do not use analytics cookies, tracking pixels, or any third-party tracking
-              tools. The only cookies used are essential authentication cookies set by Supabase
-              to keep you signed in.
+              We use Vercel Web Analytics to understand aggregate website usage, including
+              page views, referrers, device type, browser, operating system, and country. Vercel
+              Web Analytics does not use cookies and reports anonymized, aggregated data rather
+              than individual user profiles. We do not use analytics cookies or advertising
+              tracking pixels. The only cookies used by HypeCheck are essential authentication
+              cookies set by Supabase to keep you signed in.
             </p>
           </section>
 
