@@ -49,7 +49,7 @@ No subscriptions. No recurring charges. Purchased credits never expire and are t
 | Framework | [Next.js](https://nextjs.org) (TypeScript) |
 | Styling | [Tailwind CSS](https://tailwindcss.com) |
 | Database & Auth | [Supabase](https://supabase.com) |
-| AI | [Claude API](https://www.anthropic.com) (Anthropic) |
+| AI | [Claude API](https://www.anthropic.com) (Anthropic), defaulting to Claude Sonnet 4.6 |
 | Payments | [Dodo Payments](https://dodopayments.com) |
 | Hosting | [Vercel](https://vercel.com) |
 
@@ -90,6 +90,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
 # Anthropic
 ANTHROPIC_API_KEY=your_anthropic_api_key
+ANTHROPIC_MODEL=claude-sonnet-4-6
 
 # Dodo Payments
 DODO_SECRET_KEY=your_dodo_secret_key
@@ -102,6 +103,11 @@ DODO_ENVIRONMENT=test_mode
 # App
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
+
+`ANTHROPIC_MODEL` is optional. If it is not set, HypeCheck defaults to
+`claude-sonnet-4-6`, Anthropic's balanced model for strong report quality,
+speed, and cost control. You can override it with another supported Claude API
+model when testing quality or cost tradeoffs.
 
 ---
 

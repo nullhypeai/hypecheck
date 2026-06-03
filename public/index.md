@@ -2,7 +2,7 @@
 title: HypeCheck - AI Startup Idea Validator
 description: Open-source AI reality checks for startup ideas.
 url: https://hypecheck.nullhype.tech/
-last_updated: 2026-05-17
+last_updated: 2026-06-03
 ---
 
 # HypeCheck
@@ -39,7 +39,7 @@ HypeCheck is for indie hackers, developers, product builders, founders, and smal
 
 ## Open Source
 
-HypeCheck is open source. The codebase includes a practical AI SaaS stack with Next.js, Supabase, Claude, Dodo Payments, public report sharing, report history, and legal pages.
+HypeCheck is open source. The codebase includes a practical AI SaaS stack with Next.js, Supabase, Claude Sonnet 4.6 by default, Dodo Payments, public report sharing, report history, and legal pages.
 
 GitHub: https://github.com/nullhypeai/hypecheck
 

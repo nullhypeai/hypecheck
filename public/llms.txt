@@ -34,7 +34,7 @@ HypeCheck is built for indie hackers, developers, product builders, and small te
 - Public shareable report URL
 
 ## Technology
-HypeCheck is an open-source SaaS built with Next.js, Supabase, Claude, Dodo Payments, and Vercel. It includes authentication, report generation, one-time credit payments, report history, legal pages, and public report sharing.
+HypeCheck is an open-source SaaS built with Next.js, Supabase, Claude Sonnet 4.6 by default, Dodo Payments, and Vercel. The Claude model can be overridden with `ANTHROPIC_MODEL`. It includes authentication, report generation, one-time credit payments, report history, legal pages, and public report sharing.
 
 ## Markdown Mirrors
 Clean AI-readable markdown mirrors are available here:

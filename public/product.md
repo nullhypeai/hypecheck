@@ -2,7 +2,7 @@
 title: HypeCheck Product Details
 description: Product, pricing, report sections, and open-source details for HypeCheck.
 url: https://hypecheck.nullhype.tech/product.md
-last_updated: 2026-05-17
+last_updated: 2026-06-03
 ---
 
 # HypeCheck Product Details
@@ -43,7 +43,7 @@ HypeCheck is open source and built with:
 
 - Next.js
 - Supabase
-- Claude
+- Claude Sonnet 4.6 by default, configurable with `ANTHROPIC_MODEL`
 - Dodo Payments
 - Vercel
 

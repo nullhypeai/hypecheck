@@ -7,6 +7,8 @@ const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 })
 
+const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL?.trim() || 'claude-sonnet-4-6'
+
 // Slug alphabet drops 0/O/1/l/i to avoid mis-reads from screenshots and spoken URLs.
 // 10 chars from a 32-char alphabet = ~10^15 combinations. Collisions effectively impossible at indie scale.
 const generateSlug = customAlphabet('23456789abcdefghjkmnpqrstuvwxyz', 10)
@@ -125,7 +127,7 @@ export async function POST(request: NextRequest) {
 
     // ── Claude API call ─────────────────────────────────────────────────────
     const message = await client.messages.create({
-      model: 'claude-sonnet-4-5',
+      model: ANTHROPIC_MODEL,
       max_tokens: 2048,
       messages: [
         {
