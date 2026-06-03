@@ -118,6 +118,12 @@ export default function Home() {
           </Link>
           <div className="flex items-center gap-2 sm:gap-6">
             <Link
+              href="/blog"
+              className="text-xs text-slate-400 transition-colors hover:text-white sm:text-sm"
+            >
+              Blog
+            </Link>
+            <Link
               href="/login"
               className="text-xs text-slate-400 transition-colors hover:text-white sm:text-sm"
             >
@@ -352,6 +358,10 @@ export default function Home() {
           Open source on GitHub
         </a>
         <div className="mt-3 flex justify-center gap-2 text-xs text-slate-600">
+          <Link href="/blog" className="transition-colors hover:text-slate-400">
+            Blog
+          </Link>
+          <span>·</span>
           <Link href="/privacy" className="transition-colors hover:text-slate-400">
             Privacy Policy
           </Link>
