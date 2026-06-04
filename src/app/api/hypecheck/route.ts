@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
+import { isAdminEmail } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { customAlphabet } from 'nanoid'
@@ -83,23 +84,30 @@ export async function POST(request: NextRequest) {
     }
 
     // ── Usage gate ──────────────────────────────────────────────────────────
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('report_credits')
-      .eq('id', user.id)
-      .single()
+    const isAdminUser = isAdminEmail(user.email)
+    let reportCredits = 0
+    let hasFreeTier = true
+    let hasPaidCredits = false
 
-    const reportCredits = profile?.report_credits ?? 0
+    if (!isAdminUser) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('report_credits')
+        .eq('id', user.id)
+        .single()
 
-    // Count how many free reports the user has already used
-    const { count } = await supabase
-      .from('reports')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_id', user.id)
+      reportCredits = profile?.report_credits ?? 0
 
-    const reportsUsed = count ?? 0
-    const hasFreeTier = reportsUsed < 3
-    const hasPaidCredits = reportCredits > 0
+      // Count how many free reports the user has already used
+      const { count } = await supabase
+        .from('reports')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+
+      const reportsUsed = count ?? 0
+      hasFreeTier = reportsUsed < 3
+      hasPaidCredits = reportCredits > 0
+    }
 
     if (!hasFreeTier && !hasPaidCredits) {
       return NextResponse.json(
@@ -170,8 +178,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ report })
     }
 
-    // Deduct one paid credit if the user was past free tier
-    if (!hasFreeTier && hasPaidCredits) {
+    // Deduct one paid credit if the user was past free tier. Admin users bypass credits.
+    if (!isAdminUser && !hasFreeTier && hasPaidCredits) {
       const { error: creditError } = await supabase
         .from('profiles')
         .update({

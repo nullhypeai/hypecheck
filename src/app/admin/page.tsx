@@ -2,6 +2,7 @@ import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { isAdminEmail } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
@@ -27,13 +28,6 @@ interface MetricCardProps {
   label: string
   value: string
   detail: string
-}
-
-function getAdminEmails(): string[] {
-  return (process.env.HYPECHECK_ADMIN_EMAILS ?? '')
-    .split(',')
-    .map((email) => email.trim().toLowerCase())
-    .filter(Boolean)
 }
 
 function formatPercent(value: number): string {
@@ -71,10 +65,7 @@ export default async function AdminPage() {
 
   if (!user) redirect('/login')
 
-  const adminEmails = getAdminEmails()
-  const userEmail = user.email?.toLowerCase()
-
-  if (!userEmail || !adminEmails.includes(userEmail)) {
+  if (!isAdminEmail(user.email)) {
     redirect('/check')
   }
 
