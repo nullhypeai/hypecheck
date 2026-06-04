@@ -4,6 +4,8 @@ import { NextResponse, type NextRequest } from 'next/server'
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isProtectedRoute =
+    pathname === '/admin' ||
+    pathname.startsWith('/admin/') ||
     pathname === '/check' ||
     pathname === '/report' ||
     pathname === '/reports' ||
