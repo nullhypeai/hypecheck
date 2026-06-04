@@ -1,8 +1,23 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+function safeNext(next: string | null) {
+  if (!next || !next.startsWith('/') || next.startsWith('//')) {
+    return '/check'
+  }
+
+  return next
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
+
+  if (pathname.toLowerCase() === '/admin' && pathname !== '/admin') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/admin'
+    return NextResponse.redirect(url)
+  }
+
   const isProtectedRoute =
     pathname === '/admin' ||
     pathname.startsWith('/admin/') ||
@@ -52,13 +67,15 @@ export async function proxy(request: NextRequest) {
   if (!user && isProtectedRoute) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
+    url.searchParams.set('next', `${pathname}${request.nextUrl.search}`)
     return NextResponse.redirect(url)
   }
 
   // If logged in and trying to access login page, redirect to check.
   if (user && isLoginRoute) {
     const url = request.nextUrl.clone()
-    url.pathname = '/check'
+    url.pathname = safeNext(request.nextUrl.searchParams.get('next'))
+    url.search = ''
     return NextResponse.redirect(url)
   }
 

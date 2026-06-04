@@ -9,12 +9,24 @@ const authErrorCopy: Record<string, string> = {
 type LoginPageProps = {
   searchParams: Promise<{
     error?: string
+    next?: string
   }>
+}
+
+function safeNext(next: string | undefined) {
+  if (!next || !next.startsWith('/') || next.startsWith('//')) {
+    return '/check'
+  }
+
+  return next
 }
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams
   const error = params.error ? authErrorCopy[params.error] ?? authErrorCopy.auth_failed : ''
+  const next = safeNext(params.next)
+  const githubHref = `/auth/sign-in?provider=github&next=${encodeURIComponent(next)}`
+  const googleHref = `/auth/sign-in?provider=google&next=${encodeURIComponent(next)}`
 
   return (
     <main className="min-h-screen bg-[#0A0A0A] flex items-center justify-center px-4 py-12">
@@ -38,7 +50,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
           {/* GitHub button */}
           <Link
-            href="/auth/sign-in?provider=github"
+            href={githubHref}
             className="
               flex items-center justify-center gap-3 rounded-xl
               border border-[#2A2A2A] bg-[#1A1A1A] px-6 py-3.5
@@ -55,7 +67,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
           {/* Google button */}
           <Link
-            href="/auth/sign-in?provider=google"
+            href={googleHref}
             className="
               flex items-center justify-center gap-3 rounded-xl
               border border-[#2A2A2A] bg-[#1A1A1A] px-6 py-3.5
