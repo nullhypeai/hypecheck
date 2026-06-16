@@ -132,11 +132,11 @@ const productLinks = [
   },
   {
     name: "AdoptCheck",
-    eyebrow: "Building next",
-    href: "https://x.com/nullhypeai",
+    eyebrow: "Live product",
+    href: "https://adoptcheck.nullhype.tech",
     description:
       "Open-source repo due diligence before you install, fork, or ship.",
-    action: "Follow the build",
+    action: "Try AdoptCheck",
   },
 ];
 
