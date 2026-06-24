@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { track } from '@vercel/analytics'
 import { createClient } from '@/lib/supabase/client'
 import { UpgradePrompt } from '@/components/UpgradePrompt'
 
@@ -16,6 +17,12 @@ export default function CheckPage() {
   const router = useRouter()
 
   const supabase = createClient()
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('purchased') === 'true') {
+      track('purchase_succeeded', { product: 'hypecheck' })
+    }
+  }, [])
 
   async function handleSignOut() {
     await supabase.auth.signOut()
@@ -44,6 +51,7 @@ export default function CheckPage() {
 
       // Free tier exhausted. Show upgrade modal instead of error message.
       if (response.status === 403 && data.error === 'FREE_TIER_EXHAUSTED') {
+        track('paywall_shown', { product: 'hypecheck' })
         setShowUpgradePrompt(true)
         setLoading(false)
         return
@@ -55,6 +63,7 @@ export default function CheckPage() {
         return
       }
 
+      track('scan_run', { product: 'hypecheck' })
       // Route to the canonical public URL for this report
       router.push(`/report/${data.slug}`)
     } catch {

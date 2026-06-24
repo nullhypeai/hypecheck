@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { track } from '@vercel/analytics'
 
 interface UpgradePromptProps {
   onClose?: () => void
@@ -13,6 +14,7 @@ export function UpgradePrompt({ onClose }: UpgradePromptProps) {
   const handlePurchase = async (tier: 'single' | 'pack') => {
     setLoading(tier)
     setError(null)
+    track('checkout_started', { product: 'hypecheck', tier })
 
     try {
       const res = await fetch('/api/payments/checkout', {
