@@ -13,14 +13,14 @@ AI startup-idea validator. Describe an idea → structured report (Hype Score, c
 Next.js 16 (App Router), **Tailwind v4**, TypeScript. Deps: `@anthropic-ai/sdk` (Claude), `@supabase/ssr` + `@supabase/supabase-js`, `dodopayments`, `standardwebhooks`, `nanoid`, `@vercel/analytics`.
 
 ## Architecture
-- **Report gen + metering:** `src/app/api/hypecheck/route.ts` — Claude call, 3 free reports/account, then paid credits; admin emails bypass limits.
+- **Report gen + metering:** `src/app/api/hypecheck/route.ts` — Haiku 4.5 judge gate (rejects non-ideas with `NOT_A_BUSINESS_IDEA`, fails open), then Claude call (Sonnet 5 default, adaptive thinking, effort `medium`, `max_tokens` 8192), 3 free reports/account, then paid credits; admin emails bypass limits.
 - **Auth:** Supabase OAuth (GitHub + Google). `src/lib/supabase/{server,client}.ts`, `src/app/auth/{sign-in,callback}/route.ts`, `src/app/login/page.tsx`, `src/proxy.ts` (middleware: protects `/check`, `/reports`, `/admin`).
 - **Payments:** Dodo one-time. `src/app/api/payments/checkout/route.ts` + `webhook/route.ts` → `profiles.report_credits`. `src/components/UpgradePrompt.tsx`.
 - **Pages:** `/check` (run), `/report/[slug]` (public share), `/reports` (history), `/admin` (metrics), `/blog/*`, `/privacy`, `/terms`.
 - **Admin:** `src/lib/admin.ts` (email allowlist via `HYPECHECK_ADMIN_EMAILS`).
 
 ## Env vars (names only)
-`ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` (default `claude-sonnet-4-6`), `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `DODO_SECRET_KEY`, `DODO_WEBHOOK_SECRET`, `DODO_ENVIRONMENT`, `DODO_PRODUCT_ID_SINGLE`, `DODO_PRODUCT_ID_PACK`, `HYPECHECK_ADMIN_EMAILS`, `NEXT_PUBLIC_APP_URL`.
+`ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` (default `claude-sonnet-5`), `ANTHROPIC_JUDGE_MODEL` (default `claude-haiku-4-5`), `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `DODO_SECRET_KEY`, `DODO_WEBHOOK_SECRET`, `DODO_ENVIRONMENT`, `DODO_PRODUCT_ID_SINGLE`, `DODO_PRODUCT_ID_PACK`, `HYPECHECK_ADMIN_EMAILS`, `NEXT_PUBLIC_APP_URL`.
 
 ## Supabase (SHARED, ref `ejwpbauewggbfqdxvddl`)
 Tables: `profiles` (id, report_credits), `reports` (user_id, slug, idea_text, report_data jsonb). Auth redirect allowlist includes `https://hypecheck.nullhype.tech/**`. AdoptCheck reuses this same project.

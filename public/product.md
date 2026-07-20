@@ -43,7 +43,7 @@ HypeCheck is open source and built with:
 
 - Next.js
 - Supabase
-- Claude Sonnet 4.6 by default, configurable with `ANTHROPIC_MODEL`
+- Claude Sonnet 5 by default, configurable with `ANTHROPIC_MODEL`
 - Dodo Payments
 - Vercel
 
