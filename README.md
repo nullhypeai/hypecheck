@@ -49,7 +49,7 @@ No subscriptions. No recurring charges. Purchased credits never expire and are t
 | Framework | [Next.js](https://nextjs.org) (TypeScript) |
 | Styling | [Tailwind CSS](https://tailwindcss.com) |
 | Database & Auth | [Supabase](https://supabase.com) |
-| AI | [Claude API](https://www.anthropic.com) (Anthropic), defaulting to Claude Sonnet 4.6 |
+| AI | [Claude API](https://www.anthropic.com) (Anthropic), defaulting to Claude Sonnet 5 |
 | Payments | [Dodo Payments](https://dodopayments.com) |
 | Hosting | [Vercel](https://vercel.com) |
 
@@ -90,7 +90,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
 # Anthropic
 ANTHROPIC_API_KEY=your_anthropic_api_key
-ANTHROPIC_MODEL=claude-sonnet-4-6
+ANTHROPIC_MODEL=claude-sonnet-5
 
 # Dodo Payments
 DODO_SECRET_KEY=your_dodo_secret_key
@@ -105,9 +105,30 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 `ANTHROPIC_MODEL` is optional. If it is not set, HypeCheck defaults to
-`claude-sonnet-4-6`, Anthropic's balanced model for strong report quality,
+`claude-sonnet-5`, Anthropic's balanced model for strong report quality,
 speed, and cost control. You can override it with another supported Claude API
 model when testing quality or cost tradeoffs.
+
+### Model Configuration
+
+Report generation lives in `src/app/api/hypecheck/route.ts` and calls the
+Claude API with:
+
+- **Adaptive thinking** (`thinking: { type: 'adaptive' }`): the model decides
+  how much reasoning each idea needs, so simple ideas stay fast and cheap
+  while novel ones get deeper analysis.
+- **Effort `medium`** (`output_config: { effort: 'medium' }`): roughly
+  matches Claude Sonnet 4.6 at `high` while keeping latency and cost in
+  check. Drop to `low` for cheaper/faster reports, or raise to `high` for
+  maximum analysis depth.
+- **`max_tokens: 8192`**: covers both thinking tokens and the report JSON.
+  If you lower this, leave headroom — thinking spend counts against it, and
+  truncated responses fail JSON parsing.
+
+If you override `ANTHROPIC_MODEL`, use a model that supports adaptive
+thinking and the effort parameter (Claude Sonnet 4.6 or newer, Claude Opus
+4.6 or newer). Older models such as Claude Haiku 4.5 reject these parameters
+and requests will fail with a 400 error.
 
 ---
 

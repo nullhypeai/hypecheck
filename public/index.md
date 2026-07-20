@@ -39,7 +39,7 @@ HypeCheck is for indie hackers, developers, product builders, founders, and smal
 
 ## Open Source
 
-HypeCheck is open source. The codebase includes a practical AI SaaS stack with Next.js, Supabase, Claude Sonnet 4.6 by default, Dodo Payments, public report sharing, report history, and legal pages.
+HypeCheck is open source. The codebase includes a practical AI SaaS stack with Next.js, Supabase, Claude Sonnet 5 by default, Dodo Payments, public report sharing, report history, and legal pages.
 
 GitHub: https://github.com/nullhypeai/hypecheck
 

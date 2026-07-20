@@ -8,7 +8,7 @@ const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 })
 
-const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL?.trim() || 'claude-sonnet-4-6'
+const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL?.trim() || 'claude-sonnet-5'
 
 // Slug alphabet drops 0/O/1/l/i to avoid mis-reads from screenshots and spoken URLs.
 // 10 chars from a 32-char alphabet = ~10^15 combinations. Collisions effectively impossible at indie scale.
@@ -134,9 +134,12 @@ export async function POST(request: NextRequest) {
     }
 
     // ── Claude API call ─────────────────────────────────────────────────────
+    // max_tokens must cover adaptive thinking plus the report itself.
     const message = await client.messages.create({
       model: ANTHROPIC_MODEL,
-      max_tokens: 2048,
+      max_tokens: 8192,
+      thinking: { type: 'adaptive' },
+      output_config: { effort: 'medium' },
       messages: [
         {
           role: 'user',
@@ -146,7 +149,9 @@ export async function POST(request: NextRequest) {
       system: SYSTEM_PROMPT,
     })
 
-    const rawText = message.content[0].type === 'text' ? message.content[0].text : ''
+    // With adaptive thinking, content may start with a thinking block.
+    const textBlock = message.content.find((block) => block.type === 'text')
+    const rawText = textBlock?.text ?? ''
 
     const cleaned = rawText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
 
