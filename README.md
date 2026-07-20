@@ -91,6 +91,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 # Anthropic
 ANTHROPIC_API_KEY=your_anthropic_api_key
 ANTHROPIC_MODEL=claude-sonnet-5
+ANTHROPIC_JUDGE_MODEL=claude-haiku-4-5
 
 # Dodo Payments
 DODO_SECRET_KEY=your_dodo_secret_key
@@ -129,6 +130,19 @@ If you override `ANTHROPIC_MODEL`, use a model that supports adaptive
 thinking and the effort parameter (Claude Sonnet 4.6 or newer, Claude Opus
 4.6 or newer). Older models such as Claude Haiku 4.5 reject these parameters
 and requests will fail with a 400 error.
+
+### Input Judge
+
+Before a submission reaches the report model, a cheap pre-flight call to
+Claude Haiku 4.5 (`ANTHROPIC_JUDGE_MODEL`, optional override) classifies
+whether the text plausibly describes a startup, product, or side-project
+idea. Off-topic prompts — trivia questions, recipes, chit-chat, prompt
+injection attempts — are rejected with a `400` and the code
+`NOT_A_BUSINESS_IDEA` **before** any report is generated, so they never
+consume a free report or a paid credit. The judge costs a fraction of a
+cent per check, is deliberately lenient (weak ideas still pass; only clear
+non-ideas are rejected), and fails open: if the judge call errors, the
+request proceeds so a validation outage can never block real users.
 
 ---
 
