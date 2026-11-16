@@ -135,6 +135,9 @@ Fill in `.env.local` (created in step 2). [`.env.example`](../.env.example) has 
 | `DODO_PRODUCT_ID_SINGLE` | Only for payments | Dodo product ID for 1 report | Checkout |
 | `DODO_PRODUCT_ID_PACK` | Only for payments | Dodo product ID for 10 reports | Checkout |
 | `DODO_ENVIRONMENT` | Only for payments | `test_mode` or `live_mode` | Dodo API mode |
+| `GOOGLE_SITE_VERIFICATION` | No | Google Search Console → Add property → URL prefix → HTML tag method. Paste only the `content="..."` token | Proves site ownership to Google ([see step 9](#search-engine-verification-optional)) |
+| `BING_SITE_VERIFICATION` | No | Bing Webmaster Tools → Add site → HTML Meta Tag option. Paste only the `content="..."` token | Proves site ownership to Bing |
+| `BLOG_DRAFT_MODEL` | No | | Model for `npm run blog:draft` (default `claude-sonnet-5-5`) |
 
 **Check:**
 ```bash
@@ -203,6 +206,18 @@ npm run build
 
 **Check:** repeat the step 7 checklist on the production URL.
 
+### Search engine verification (optional)
+
+Do this once the production URL works. Both tools only need a meta tag, which the app adds from environment variables.
+
+1. **(human)** In [Google Search Console](https://search.google.com/search-console), add a **URL prefix** property for your production URL and choose the **HTML tag** method. Copy only the token inside `content="..."` into `GOOGLE_SITE_VERIFICATION` in Vercel (Production). Redeploy, then click **Verify**.
+2. **(human)** In [Bing Webmaster Tools](https://www.bing.com/webmasters), either import the site from Search Console (no tag needed) or add it and choose **HTML Meta Tag**. Put the token into `BING_SITE_VERIFICATION`, redeploy, and verify.
+3. **(human)** In both tools, submit `https://your-domain/sitemap.xml`. It lists every published blog post automatically.
+
+A Domain property (DNS TXT record) in Search Console also works and needs no env var.
+
+**Check:** `curl -s https://your-domain/ | grep -o '<meta name="\(google-site-verification\|msvalidate.01\)"[^>]*>'` prints the tags you set, and `https://your-domain/sitemap.xml` lists your posts.
+
 **Other hosts:**
 - Run `npm run build && npm start`. Any Node.js host works if it allows streaming responses and requests of up to 300 seconds. Most reports finish within 90 seconds, but a host that cuts requests off sooner will fail the slow ones.
 - Proxies must not buffer `application/x-ndjson` responses, or the waiting screen won't update until the end.
@@ -214,13 +229,14 @@ The code ships with the hosted instance's branding and legal text. Before going 
 
 | What | Where |
 |---|---|
-| Public URL (sitemap, canonical, Open Graph) | `NEXT_PUBLIC_APP_URL`, read in [`src/lib/site.ts`](../src/lib/site.ts). The blog post keeps the original URL on purpose (see the blog row) |
+| Public URL (sitemap, canonical, Open Graph, RSS) | `NEXT_PUBLIC_APP_URL`, read in [`src/lib/site.ts`](../src/lib/site.ts) |
+| Blog author and publisher name | `PUBLISHER_NAME` in [`src/lib/site.ts`](../src/lib/site.ts) |
 | Repository link shown on the site | `REPO_URL` in [`src/lib/site.ts`](../src/lib/site.ts) |
 | Wordmark ("HypeCheck by NullHype") | [`src/components/site/SiteHeader.tsx`](../src/components/site/SiteHeader.tsx), [`SiteFooter.tsx`](../src/components/site/SiteFooter.tsx) |
 | Page title, description, favicon | [`src/app/layout.tsx`](../src/app/layout.tsx) |
 | Landing copy, FAQ, structured data, pricing text | [`src/app/page.tsx`](../src/app/page.tsx) |
 | **Privacy policy and terms** (names NullHype AI and its contact email) | [`src/app/privacy/page.tsx`](../src/app/privacy/page.tsx), [`src/app/terms/page.tsx`](../src/app/terms/page.tsx). You must replace these with your own. |
-| Blog post (the hosted instance's content) | `src/app/blog/`. Delete it or write your own, and update [`src/app/sitemap.ts`](../src/app/sitemap.ts) |
+| Blog posts (the hosted instance's content) | Markdown files in [`content/blog/`](../content/blog/). Delete them or write your own; the blog index, sitemap and RSS feed update themselves. Clear [`content/blog-backlog.yml`](../content/blog-backlog.yml) too if you use the drafter. See [`content/blog/README.md`](../content/blog/README.md) |
 | AI-discovery files describing the hosted product | [`public/llms.txt`](../public/llms.txt), [`public/index.md`](../public/index.md), [`public/product.md`](../public/product.md) |
 | Design tokens (colours, fonts) | [`src/app/globals.css`](../src/app/globals.css), [`src/app/layout.tsx`](../src/app/layout.tsx) |
 | The analysis itself (prompt, scoring rubric, report schema) | [`src/lib/report/generate.ts`](../src/lib/report/generate.ts) |

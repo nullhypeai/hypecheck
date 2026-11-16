@@ -1,29 +1,23 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import SiteHeader from "@/components/site/SiteHeader";
 import SiteFooter from "@/components/site/SiteFooter";
+import { getAllPosts, showDrafts } from "@/lib/blog";
+import { formatPostDate } from "@/lib/blogFormat";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Startup Idea Validation Blog - HypeCheck",
   description:
     "Practical guides for validating startup ideas, testing MVP demand, and using AI to stress-test what you should build next.",
   alternates: {
     canonical: "/blog",
+    types: { "application/rss+xml": [{ url: "/blog/rss.xml", title: "HypeCheck Blog" }] },
   },
 };
 
-const posts = [
-  {
-    title: "How to Validate a Startup Idea Before Building an MVP",
-    description:
-      "A practical validation workflow for founders, indie hackers, and developers who want signal before they spend weeks building.",
-    href: "/blog/how-to-validate-a-startup-idea-before-building-mvp",
-    date: "June 3, 2026",
-    readTime: "8 min read",
-    keywords: ["MVP validation", "startup idea validation", "validate business idea"],
-  },
-];
-
 export default function BlogPage() {
+  const posts = getAllPosts({ includeDrafts: showDrafts() });
+
   return (
     <div className="flex min-h-screen flex-col bg-paper text-ink">
       <SiteHeader />
@@ -50,35 +44,41 @@ export default function BlogPage() {
 
         <main className="mt-12 grid">
           {posts.map((post) => (
-            <article
-              key={post.href}
-              className="border-t border-ink py-8"
-            >
+            <article key={post.slug} className="border-t border-ink py-8">
               <div className="flex flex-wrap gap-2 font-mono text-[11px] tabular-nums text-muted">
-                <span>{post.date}</span>
+                <span>{formatPostDate(post.date)}</span>
                 <span>/</span>
-                <span>{post.readTime}</span>
+                <span>{post.readingMinutes} min read</span>
+                {post.draft && (
+                  <>
+                    <span>/</span>
+                    <span className="text-validate">Draft</span>
+                  </>
+                )}
               </div>
               <h2 className="mt-4 font-serif text-2xl font-medium tracking-tight text-ink">
-                <Link href={post.href} className="underline decoration-rule-strong underline-offset-4 transition-colors hover:text-accent">
+                <Link
+                  href={`/blog/${post.slug}`}
+                  className="underline decoration-rule-strong underline-offset-4 transition-colors hover:text-accent"
+                >
                   {post.title}
                 </Link>
               </h2>
-              <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-soft">
-                {post.description}
-              </p>
-              <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-rule pt-4">
-                {post.keywords.map((keyword) => (
-                  <span
-                    key={keyword}
-                    className="font-mono text-[11px] text-muted"
-                  >
-                    {keyword}
-                  </span>
-                ))}
-              </div>
+              <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-soft">{post.dek}</p>
+              {post.keywords.length > 0 && (
+                <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-rule pt-4">
+                  {post.keywords.map((keyword) => (
+                    <span key={keyword} className="font-mono text-[11px] text-muted">
+                      {keyword}
+                    </span>
+                  ))}
+                </div>
+              )}
             </article>
           ))}
+          {posts.length === 0 && (
+            <p className="border-t border-ink py-8 text-[15px] text-ink-soft">No posts yet.</p>
+          )}
         </main>
       </div>
       <SiteFooter />

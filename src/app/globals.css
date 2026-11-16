@@ -83,3 +83,80 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Rendered markdown for blog posts (src/lib/blog.ts). Mirrors the editorial article layout. */
+.article-body {
+  @apply font-serif text-[17px] leading-relaxed text-ink-soft;
+}
+.article-body > :first-child {
+  margin-top: 0;
+}
+.article-body p,
+.article-body ul,
+.article-body ol,
+.article-body blockquote,
+.article-body table,
+.article-body pre {
+  @apply mt-5;
+}
+.article-body h2 {
+  @apply mt-10 mb-3 scroll-mt-24 border-t border-ink pt-5 font-serif text-2xl font-medium tracking-tight text-ink;
+}
+.article-body h3 {
+  @apply mt-8 mb-2 scroll-mt-24 font-serif text-xl font-medium tracking-tight text-ink;
+}
+.article-body h4 {
+  @apply mt-6 mb-2 font-sans text-[15px] font-semibold text-ink;
+}
+.article-body h2 + p,
+.article-body h3 + p,
+.article-body h4 + p,
+.article-body h2 + ul,
+.article-body h3 + ul,
+.article-body h2 + ol,
+.article-body h3 + ol {
+  margin-top: 0;
+}
+.article-body a {
+  @apply text-ink underline decoration-rule-strong underline-offset-4 transition-colors hover:text-accent;
+}
+.article-body strong {
+  @apply font-semibold text-ink;
+}
+.article-body ul {
+  @apply list-disc space-y-2 pl-6;
+}
+.article-body ol {
+  @apply list-decimal space-y-2 pl-6;
+}
+.article-body li::marker {
+  @apply text-muted;
+}
+.article-body blockquote {
+  @apply border-l-2 border-accent pl-4 italic text-ink;
+}
+.article-body code {
+  @apply bg-surface px-1 py-0.5 font-mono text-[0.85em] text-ink;
+}
+.article-body pre {
+  @apply overflow-x-auto border border-rule bg-surface p-4 font-mono text-[13px] leading-normal;
+}
+.article-body pre code {
+  @apply bg-transparent p-0;
+}
+.article-body table {
+  @apply block w-full overflow-x-auto border-collapse font-sans text-[14px];
+}
+.article-body th,
+.article-body td {
+  @apply border-b border-rule px-3 py-2 text-left align-top;
+}
+.article-body th {
+  @apply border-b-ink font-medium text-ink;
+}
+.article-body hr {
+  @apply my-10 border-rule;
+}
+.article-body img {
+  @apply mt-6 h-auto max-w-full border border-rule;
+}

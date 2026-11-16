@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SITE_URL } from "@/lib/site";
+import { BING_SITE_VERIFICATION, GOOGLE_SITE_VERIFICATION, SITE_URL } from "@/lib/site";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
@@ -41,6 +41,11 @@ export const metadata: Metadata = {
     title: "HypeCheck - AI Startup Idea Validator",
     description:
       "Open-source AI reality checks for startup ideas. Get 3 free reports, then buy one-time credits. No subscription.",
+  },
+  // Search Console / Bing Webmaster Tools ownership tags; omitted when the env vars are unset.
+  verification: {
+    ...(GOOGLE_SITE_VERIFICATION ? { google: GOOGLE_SITE_VERIFICATION } : {}),
+    ...(BING_SITE_VERIFICATION ? { other: { "msvalidate.01": BING_SITE_VERIFICATION } } : {}),
   },
   icons: {
     icon: [
