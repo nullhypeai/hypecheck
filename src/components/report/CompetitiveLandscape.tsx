@@ -1,63 +1,54 @@
-import { Competitor, ThreatLevel } from '@/lib/types'
+import { Competitor } from '@/lib/types'
 import SectionCard from './SectionCard'
+import { domainOf, LevelTag, safeUrl } from './levels'
 
-function ThreatBadge({ level }: { level: ThreatLevel }) {
-  const styles = {
-    Low: 'bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/30',
-    Medium: 'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/30',
-    High: 'bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/30',
-  }
+function CompetitorRow({ competitor, index }: { competitor: Competitor; index: number }) {
+  const url = safeUrl(competitor.url)
   return (
-    <span
-      className={`
-        inline-flex items-center rounded-full border px-2 py-0.5
-        text-[11px] font-semibold ${styles[level]}
-      `}
-    >
-      {level}
-    </span>
-  )
-}
-
-function CompetitorRow({ competitor }: { competitor: Competitor }) {
-  return (
-    <div className="flex items-start justify-between gap-4 border-b border-[#1A1A1A] pb-4 last:border-0 last:pb-0">
+    <li className="grid grid-cols-[28px_1fr] gap-x-2 border-b border-rule py-4 first:pt-0 last:border-0 last:pb-0">
+      <span className="font-mono text-[12px] text-faint pt-[3px]">{String(index + 1).padStart(2, '0')}</span>
       <div>
-        <p className="text-[14px] font-semibold text-[#F5F5F5]">
-          {competitor.name}
-        </p>
-        <p className="mt-0.5 text-[13px] leading-relaxed text-[#888888]">
-          {competitor.description}
-        </p>
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <p className="text-[15px] font-semibold text-ink">
+            {competitor.name}
+            {url && (
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="ml-2 font-mono text-[11px] font-normal text-muted underline decoration-rule-strong underline-offset-2 hover:text-accent"
+              >
+                {domainOf(url)} ↗
+              </a>
+            )}
+          </p>
+          <LevelTag level={competitor.threatLevel} suffix="threat" />
+        </div>
+        <p className="mt-1.5 text-[14px] leading-relaxed text-ink-soft">{competitor.description}</p>
       </div>
-      <div className="shrink-0 pt-0.5">
-        <ThreatBadge level={competitor.threatLevel} />
-      </div>
-    </div>
+    </li>
   )
 }
 
 export default function CompetitiveLandscape({
   competitors,
   competitiveAdvantage,
+  number,
 }: {
   competitors: Competitor[]
   competitiveAdvantage: string
+  number?: string
 }) {
   return (
-    <SectionCard title="Competitive Landscape">
-      <div className="flex flex-col gap-4">
+    <SectionCard number={number} title="Competitive landscape">
+      <ol>
         {competitors.map((c, i) => (
-          <CompetitorRow key={i} competitor={c} />
+          <CompetitorRow key={i} competitor={c} index={i} />
         ))}
-      </div>
-      <div className="mt-5 rounded-lg border border-[#2563EB]/20 bg-[#2563EB]/5 px-4 py-3">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-[#2563EB]">
-          Your Edge
-        </p>
-        <p className="mt-1 text-[13px] leading-relaxed text-[#888888]">
-          {competitiveAdvantage}
-        </p>
+      </ol>
+      <div className="mt-5 bg-surface px-4 py-3 ring-1 ring-rule">
+        <p className="kicker">Where the opening is</p>
+        <p className="mt-1.5 text-[14px] leading-relaxed text-ink">{competitiveAdvantage}</p>
       </div>
     </SectionCard>
   )

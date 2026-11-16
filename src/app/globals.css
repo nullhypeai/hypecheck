@@ -1,28 +1,85 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/*
+  HypeCheck design tokens: an analyst's memo, not a SaaS dashboard.
+  Warm paper, near-black ink, hairline rules, one red accent for marks.
+  Verdict colours are reserved for verdicts and strength/threat levels.
+*/
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-paper: #f5f2ea;
+  --color-surface: #fbf9f4;
+  --color-ink: #17140f;
+  --color-ink-soft: #3a352d;
+  --color-muted: #6b6458;
+  --color-faint: #746c5f; /* 4.6:1 on paper, AA for small text */
+  --color-rule: #ddd6c7;
+  --color-rule-strong: #c9c0ad;
+  --color-accent: #c8361b;
+  --color-accent-soft: #f3ddd4;
+  --color-build: #1d6b43;
+  --color-build-soft: #dcebe1;
+  --color-validate: #8a5700;
+  --color-validate-soft: #f3e6c8;
+  --color-nobuild: #b3261e;
+  --color-nobuild-soft: #f5dcd8;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-newsreader);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: #0A0A0A;
-  color: #F5F5F5;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Small-caps style label used for section kickers and metadata. */
+@utility kicker {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+@keyframes hc-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@keyframes hc-rise {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@utility animate-hc-pulse {
+  animation: hc-pulse 1.4s ease-in-out infinite;
+}
+
+@utility animate-hc-rise {
+  animation: hc-rise 0.35s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

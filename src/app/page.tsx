@@ -1,4 +1,6 @@
 import Link from "next/link";
+import SiteHeader from "@/components/site/SiteHeader";
+import SiteFooter from "@/components/site/SiteFooter";
 
 const faqs = [
   {
@@ -25,6 +27,11 @@ const faqs = [
     question: "Is HypeCheck open source?",
     answer:
       "Yes. HypeCheck is open source, and the public repository is available at github.com/nullhypeai/hypecheck.",
+  },
+  {
+    question: "Where does the data in a report come from?",
+    answer:
+      "Each report runs live web searches when you submit your idea. Competitors, prices, market figures and demand quotes come from pages it found, and every report links its sources. When it cannot find evidence, the report says so instead of guessing.",
   },
   {
     question: "Does HypeCheck replace customer discovery?",
@@ -97,9 +104,75 @@ const hypeCheckStructuredData = [
   },
 ];
 
+const contents = [
+  {
+    title: "A verdict you can act on",
+    desc: "A Hype Score from 0 to 100 with a clear call: build, validate first, or don't build.",
+  },
+  {
+    title: "The bet you're making",
+    desc: "The one assumption your idea depends on that is most likely to be wrong.",
+  },
+  {
+    title: "Real competitors, linked",
+    desc: "Who a customer would compare you against, what they charge, and where they fall short.",
+  },
+  {
+    title: "Demand evidence, not vibes",
+    desc: "Verbatim quotes from people describing the problem, with links. If nobody is talking about it, the report says so.",
+  },
+  {
+    title: "Market size with the math shown",
+    desc: "Anchored on a figure it found, with the arithmetic in plain sight so you can check it.",
+  },
+  {
+    title: "A test to run this week",
+    desc: "One cheap next step with a target, and what result means keep going or stop.",
+  },
+];
+
+function SpecimenReport() {
+  return (
+    <figure className="relative mr-2.5 sm:mr-0">
+      <div className="border border-ink bg-surface p-6 shadow-[10px_10px_0_0_var(--color-ink)] sm:p-7">
+        <div className="flex items-center justify-between border-b border-ink pb-2.5">
+          <span className="kicker">HypeCheck report</span>
+          <span className="kicker">7 sources</span>
+        </div>
+        <p className="mt-4 font-serif text-[24px] font-medium leading-tight tracking-[-0.01em] text-ink">
+          Automatic waitlist backfill for dental clinics
+        </p>
+        <div className="mt-4 flex items-end gap-5 border-y border-rule py-4">
+          <div>
+            <p className="kicker">Hype score</p>
+            <p className="mt-1 font-serif text-[52px] font-medium leading-none text-validate">
+              42<span className="ml-1 font-mono text-[12px] text-faint">/100</span>
+            </p>
+          </div>
+          <span className="mb-1 border-2 border-validate bg-validate-soft px-2.5 py-0.5 font-mono text-[11.5px] font-semibold uppercase tracking-[0.12em] text-validate">
+            Validate first
+          </span>
+        </div>
+        <p className="mt-4 text-[14px] leading-relaxed text-ink-soft">
+          Open Dental and Dentrix already ship ASAP-list texting. Weave starts around $249/mo and NexHealth around
+          $350/mo, so $149 for automation alone is a real but unproven wedge.
+        </p>
+        <div className="mt-4 bg-ink p-4 text-paper">
+          <p className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-accent-soft">Do this next</p>
+          <p className="mt-1.5 font-serif text-[16px] leading-snug">
+            Call 30 independent Open Dental clinics. Keep going if 3 agree to a paid pilot. Stop if most say the built-in
+            list already works.
+          </p>
+        </div>
+      </div>
+      <figcaption className="mt-5 text-right font-mono text-[11px] text-faint">Excerpt from a real report</figcaption>
+    </figure>
+  );
+}
+
 function HypeCheckHome() {
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <div className="flex min-h-screen flex-col">
       {hypeCheckStructuredData.map((entry) => (
         <script
           key={entry["@type"]}
@@ -107,238 +180,141 @@ function HypeCheckHome() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(entry) }}
         />
       ))}
-      {/* ── Sticky Nav ─────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-3 py-3 sm:px-6 sm:py-4">
-          <Link href="/" className="text-xl font-bold tracking-tight text-white sm:text-2xl">
-            ⚡ HypeCheck{" "}
-            <span className="hidden font-normal text-slate-400 sm:inline">
-              by NullHype AI
-            </span>
-          </Link>
-          <div className="flex items-center gap-2 sm:gap-6">
-            <Link
-              href="/blog"
-              className="text-xs text-slate-400 transition-colors hover:text-white sm:text-sm"
-            >
-              Blog
-            </Link>
-            <Link
-              href="/login"
-              className="text-xs text-slate-400 transition-colors hover:text-white sm:text-sm"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/check"
-              className="rounded-lg bg-blue-600 px-3 py-2 text-center text-xs font-semibold text-white transition-colors hover:bg-blue-700 sm:px-4 sm:text-sm"
-            >
-              Check My Idea
-            </Link>
-          </div>
-        </div>
-      </header>
+      <SiteHeader />
 
-      <main>
-        {/* ── Hero ───────────────────────────────────────────────────── */}
-        <section className="bg-slate-950 px-6 py-28 text-center sm:py-36">
-          <div className="mx-auto max-w-3xl">
-            <div className="mb-4 inline-flex items-center rounded-full border border-blue-600/30 bg-blue-600/10 px-3 py-1 text-xs font-medium text-blue-400">
-              AI powered startup reality check
-            </div>
-            <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Stop building things{" "}
-              <span className="text-blue-400">nobody wants.</span>
+      <main className="flex-1">
+        {/* Hero */}
+        <section className="mx-auto grid max-w-[1080px] gap-14 px-4 pb-20 pt-14 sm:px-6 sm:pt-20 lg:grid-cols-[1.1fr_1fr] lg:items-center">
+          <div>
+            <p className="kicker">Startup idea validation, researched</p>
+            <h1 className="mt-4 font-serif text-[48px] font-medium leading-[1.02] tracking-[-0.03em] text-ink sm:text-[64px]">
+              Stop building things nobody wants.
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-400">
-              HypeCheck runs an AI powered reality check on your startup idea. Market size, competitors, demand signals, and a brutally honest
-              verdict. In 60 seconds.
+            <p className="mt-6 max-w-[520px] text-[18px] leading-relaxed text-ink-soft">
+              Describe your idea. HypeCheck searches the web for real competitors, prices and people describing the
+              problem, then gives you a straight verdict and the cheapest test to run next.
             </p>
-            <div className="mt-10 flex flex-col items-center gap-3">
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
               <Link
                 href="/check"
-                className="inline-flex flex-col items-center rounded-xl bg-blue-600 px-10 py-4 shadow-lg shadow-blue-900/40 transition-colors hover:bg-blue-700"
+                className="bg-ink px-7 py-4 text-center text-[16px] font-medium text-paper transition-colors hover:bg-ink-soft"
               >
-                <span className="text-base font-bold text-white">Check My Idea</span>
+                Check your idea, free
               </Link>
+              <p className="text-[13px] text-muted">3 free reports. No card. No subscription.</p>
             </div>
           </div>
+          <SpecimenReport />
         </section>
 
-        {/* ── How it works ───────────────────────────────────────────── */}
-        <section className="border-y border-slate-800 bg-slate-900 px-6 py-20">
-          <div className="mx-auto max-w-4xl">
-            <h2 className="mb-14 text-center text-2xl font-bold tracking-tight text-white sm:text-3xl">
-              How it works
-            </h2>
-            <ol className="grid gap-8 sm:grid-cols-3">
+        {/* How it works */}
+        <section className="border-y border-rule bg-surface">
+          <div className="mx-auto max-w-[1080px] px-4 py-16 sm:px-6">
+            <p className="kicker">How it works</p>
+            <ol className="mt-6 grid gap-8 sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-rule">
               {[
-                {
-                  step: "1",
-                  text: "Describe your idea in plain language",
-                },
-                {
-                  step: "2",
-                  text: "HypeCheck analyses market reality, competitors, and demand signals",
-                },
-                {
-                  step: "3",
-                  text: "Get a structured report with a Hype Score and a clear verdict",
-                },
-              ].map(({ step, text }) => (
-                <li key={step} className="flex flex-col items-center text-center sm:items-start sm:text-left">
-                  <span className="mb-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
-                    {step}
-                  </span>
-                  <p className="text-slate-300 leading-relaxed">{text}</p>
+                ["Describe it", "A few sentences: who it is for, what it does, how you would charge."],
+                [
+                  "It does the research",
+                  "Live web searches for competitors, pricing, market data and real discussions. You watch it happen.",
+                ],
+                ["You get a verdict", "A scored, sourced report with one concrete test to run this week."],
+              ].map(([title, desc], i) => (
+                <li key={title} className="sm:px-6 sm:first:pl-0 sm:last:pr-0">
+                  <span className="font-mono text-[12px] text-accent">0{i + 1}</span>
+                  <p className="mt-2 font-serif text-[22px] font-medium text-ink">{title}</p>
+                  <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">{desc}</p>
                 </li>
               ))}
             </ol>
           </div>
         </section>
 
-        {/* ── Features Grid ──────────────────────────────────────────── */}
-        <section className="bg-slate-950 px-6 py-20">
-          <div className="mx-auto max-w-5xl">
-            <h2 className="mb-12 text-center text-2xl font-bold tracking-tight text-white sm:text-3xl">
-              What you get
-            </h2>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                {
-                  icon: "📊",
-                  title: "Hype Score",
-                  desc: "0 to 100 viability verdict so you know exactly where your idea stands.",
-                },
-                {
-                  icon: "🔍",
-                  title: "Competitor Teardown",
-                  desc: "Who exists, what they miss, and where your opening is.",
-                },
-                {
-                  icon: "📈",
-                  title: "Market Size",
-                  desc: "TAM estimate grounded in real data, not wishful thinking.",
-                },
-                {
-                  icon: "💬",
-                  title: "Demand Signals",
-                  desc: "Real Reddit and X mentions of the problem you're solving.",
-                },
-                {
-                  icon: "⚠️",
-                  title: "Execution Risk",
-                  desc: "Landmines flagged before you build, not after you ship.",
-                },
-                {
-                  icon: "🔗",
-                  title: "Shareable Report",
-                  desc: "Send it to co-founders or investors with one link.",
-                },
-              ].map(({ icon, title, desc }) => (
-                <div
-                  key={title}
-                  className="rounded-xl border border-slate-800 bg-slate-900 p-6 transition-colors hover:border-slate-700"
-                >
-                  <div className="mb-3 text-2xl">{icon}</div>
-                  <h3 className="mb-2 font-semibold text-white">{title}</h3>
-                  <p className="text-sm leading-relaxed text-slate-400">{desc}</p>
-                </div>
+        {/* What you get */}
+        <section className="mx-auto max-w-[1080px] px-4 py-20 sm:px-6">
+          <div className="grid gap-10 lg:grid-cols-[320px_1fr]">
+            <div>
+              <p className="kicker">What a report contains</p>
+              <h2 className="mt-3 font-serif text-[34px] font-medium leading-[1.1] tracking-[-0.02em] text-ink">
+                Less cheerleading. More evidence.
+              </h2>
+              <p className="mt-4 text-[15px] leading-relaxed text-ink-soft">
+                Most AI feedback tells you your idea is great. HypeCheck is built to tell you what is true, show where it
+                found it, and say plainly when the evidence is not there.
+              </p>
+            </div>
+            <ol className="grid gap-x-10 sm:grid-cols-2">
+              {contents.map(({ title, desc }, i) => (
+                <li key={title} className="grid grid-cols-[32px_1fr] border-t border-rule py-5">
+                  <span className="font-mono text-[12px] text-accent pt-[5px]">{String(i + 1).padStart(2, "0")}</span>
+                  <div>
+                    <h3 className="text-[16px] font-semibold text-ink">{title}</h3>
+                    <p className="mt-1.5 text-[14.5px] leading-relaxed text-ink-soft">{desc}</p>
+                  </div>
+                </li>
               ))}
-            </div>
+            </ol>
           </div>
         </section>
 
-        {/* ── Pricing ────────────────────────────────────────────────── */}
-        <section className="border-t border-slate-800 bg-slate-900 px-6 py-20">
-          <div className="mx-auto max-w-3xl">
-            <h2 className="mb-4 text-center text-2xl font-bold tracking-tight text-white sm:text-3xl">
-              Simple pricing
-            </h2>
-            <p className="mb-12 text-center text-sm text-slate-400">
-              One-time payments. No recurring plans. No recurring charges.
-            </p>
-            <div className="grid gap-6 sm:grid-cols-2">
-              {/* Single report */}
-              <div className="flex flex-col rounded-xl border border-slate-700 bg-slate-800 p-8">
-                <p className="mb-1 text-sm font-medium uppercase tracking-widest text-slate-400">
-                  Single report
+        {/* Pricing */}
+        <section className="border-t border-ink">
+          <div className="mx-auto max-w-[1080px] px-4 py-20 sm:px-6">
+            <div className="grid gap-10 lg:grid-cols-[320px_1fr]">
+              <div>
+                <p className="kicker">Pricing</p>
+                <h2 className="mt-3 font-serif text-[34px] font-medium leading-[1.1] tracking-[-0.02em] text-ink">
+                  Pay per report. Never per month.
+                </h2>
+                <p className="mt-4 text-[15px] leading-relaxed text-ink-soft">
+                  Every account starts with 3 free reports. After that, buy credits once. They never expire.
                 </p>
-                <div className="mb-6 mt-3 flex items-end gap-1">
-                  <span className="text-4xl font-extrabold text-white">$5</span>
-                  <span className="mb-1 text-slate-400">one-time</span>
-                </div>
-                <ul className="mb-8 flex flex-col gap-3 text-sm text-slate-300">
-                  {[
-                    "Full HypeCheck report",
-                    "Hype Score + verdict",
-                    "Competitor analysis",
-                    "Shareable link",
-                  ].map((item) => (
-                    <li key={item} className="flex items-center gap-2">
-                      <span className="text-blue-400">✓</span> {item}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href="/check"
-                  className="mt-auto rounded-lg border border-blue-600 px-5 py-3 text-center text-sm font-semibold text-blue-400 transition-colors hover:bg-blue-600/10"
-                >
-                  Get started
-                </Link>
               </div>
-
-              {/* 10 report pack, highlighted */}
-              <div className="relative flex flex-col rounded-xl border border-blue-600 bg-slate-800 p-8 shadow-xl shadow-blue-900/30">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-3 py-0.5 text-xs font-semibold text-white">
-                  Best value
-                </div>
-                <p className="mb-1 text-sm font-medium uppercase tracking-widest text-blue-400">
-                  10 report pack
-                </p>
-                <div className="mb-6 mt-3 flex items-end gap-1">
-                  <span className="text-4xl font-extrabold text-white">$8.99</span>
-                  <span className="mb-1 text-slate-400">one-time</span>
-                </div>
-                <ul className="mb-8 flex flex-col gap-3 text-sm text-slate-300">
-                  {[
-                    "10 full reports",
-                    "Everything in single report",
-                    "$0.90 per report",
-                    "No expiry",
-                  ].map((item) => (
-                    <li key={item} className="flex items-center gap-2">
-                      <span className="text-blue-400">✓</span> {item}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href="/check"
-                  className="mt-auto rounded-lg bg-blue-600 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-blue-700"
-                >
-                  Buy 10 reports
-                </Link>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {[
+                  { name: "Single report", price: "$5", note: "One more idea to check.", cta: "Get started", featured: false },
+                  { name: "10 reports", price: "$8.99", note: "$0.90 per report. No expiry.", cta: "Buy 10 reports", featured: true },
+                ].map((t) => (
+                  <div
+                    key={t.name}
+                    className={`flex flex-col border p-6 ${t.featured ? "border-ink bg-surface" : "border-rule-strong"}`}
+                  >
+                    <p className="kicker">{t.featured ? "Best value" : "One-off"}</p>
+                    <p className="mt-3 font-serif text-[44px] font-medium leading-none text-ink">{t.price}</p>
+                    <p className="mt-3 text-[15px] font-medium text-ink">{t.name}</p>
+                    <p className="mt-1 text-[13.5px] text-muted">{t.note}</p>
+                    <Link
+                      href="/check"
+                      className={`mt-6 px-5 py-3 text-center text-[14px] font-medium transition-colors ${
+                        t.featured ? "bg-ink text-paper hover:bg-ink-soft" : "border border-ink text-ink hover:bg-surface"
+                      }`}
+                    >
+                      {t.cta}
+                    </Link>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── FAQ ────────────────────────────────────────────────────── */}
-        <section className="border-t border-slate-800 bg-slate-950 px-6 py-20">
-          <div className="mx-auto max-w-3xl">
-            <h2 className="mb-10 text-center text-2xl font-bold tracking-tight text-white sm:text-3xl">
-              Common questions
-            </h2>
-            <div className="divide-y divide-slate-800 rounded-xl border border-slate-800 bg-slate-900">
+        {/* FAQ */}
+        <section className="border-t border-rule bg-surface">
+          <div className="mx-auto grid max-w-[1080px] gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[320px_1fr]">
+            <div>
+              <p className="kicker">Questions</p>
+              <h2 className="mt-3 font-serif text-[34px] font-medium leading-[1.1] tracking-[-0.02em] text-ink">
+                Common questions
+              </h2>
+            </div>
+            <div className="border-t border-ink">
               {faqs.map(({ question, answer }) => (
-                <details key={question} className="group p-6">
-                  <summary className="cursor-pointer list-none text-base font-semibold text-white">
+                <details key={question} className="group border-b border-rule py-5">
+                  <summary className="flex cursor-pointer list-none items-baseline justify-between gap-4 text-[16px] font-medium text-ink">
                     <span>{question}</span>
-                    <span className="float-right text-blue-400 transition-transform group-open:rotate-45">
-                      +
-                    </span>
+                    <span className="font-mono text-[14px] text-accent transition-transform group-open:rotate-45">+</span>
                   </summary>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-400">{answer}</p>
+                  <p className="mt-3 max-w-[620px] text-[15px] leading-relaxed text-ink-soft">{answer}</p>
                 </details>
               ))}
             </div>
@@ -346,31 +322,7 @@ function HypeCheckHome() {
         </section>
       </main>
 
-      {/* ── Footer ─────────────────────────────────────────────────── */}
-      <footer className="border-t border-slate-800 bg-slate-950 px-6 py-8 text-center text-sm text-slate-500">
-        Built by NullHype AI · Powered by Claude ·{" "}
-        <a
-          href="https://github.com/nullhypeai/hypecheck"
-          className="underline underline-offset-2 transition-colors hover:text-slate-300"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Open source on GitHub
-        </a>
-        <div className="mt-3 flex justify-center gap-2 text-xs text-slate-600">
-          <Link href="/blog" className="transition-colors hover:text-slate-400">
-            Blog
-          </Link>
-          <span>·</span>
-          <Link href="/privacy" className="transition-colors hover:text-slate-400">
-            Privacy Policy
-          </Link>
-          <span>·</span>
-          <Link href="/terms" className="transition-colors hover:text-slate-400">
-            Terms of Service
-          </Link>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

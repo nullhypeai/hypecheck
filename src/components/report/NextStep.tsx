@@ -1,22 +1,23 @@
-import SectionCard from './SectionCard'
-
 export default function NextStep({
   action,
   rationale,
+  successSignal,
 }: {
   action: string
   rationale: string
+  successSignal?: string
 }) {
   return (
-    <SectionCard title="Recommended Next Step">
-      <div className="rounded-lg border border-[#2563EB]/30 bg-[#2563EB]/5 px-5 py-4">
-        <p className="text-[15px] font-semibold leading-relaxed text-[#F5F5F5]">
-          {action}
-        </p>
-        <p className="mt-3 text-[13px] leading-relaxed text-[#888888]">
-          {rationale}
-        </p>
-      </div>
-    </SectionCard>
+    <section className="bg-ink px-6 py-7 text-paper sm:px-8">
+      <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-accent-soft">Do this next</p>
+      <p className="mt-3 font-serif text-[22px] leading-snug sm:text-[24px]">{action}</p>
+      <p className="mt-3 text-[14px] leading-relaxed text-paper/70">{rationale}</p>
+      {successSignal && (
+        <div className="mt-5 border-t border-paper/20 pt-4">
+          <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-paper/60">How to read the result</p>
+          <p className="mt-1.5 text-[14px] leading-relaxed text-paper/90">{successSignal}</p>
+        </div>
+      )}
+    </section>
   )
 }

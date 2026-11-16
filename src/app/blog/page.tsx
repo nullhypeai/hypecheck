@@ -1,4 +1,6 @@
 import Link from "next/link";
+import SiteHeader from "@/components/site/SiteHeader";
+import SiteFooter from "@/components/site/SiteFooter";
 
 export const metadata = {
   title: "Startup Idea Validation Blog - HypeCheck",
@@ -23,52 +25,53 @@ const posts = [
 
 export default function BlogPage() {
   return (
-    <div className="min-h-screen bg-[#0A0A0A] px-4 py-16">
-      <div className="mx-auto max-w-4xl">
+    <div className="flex min-h-screen flex-col bg-paper text-ink">
+      <SiteHeader />
+      <div className="mx-auto w-full max-w-[1008px] flex-1 px-4 py-12 sm:px-6 sm:py-16">
         <Link
           href="/"
-          className="text-[13px] text-[#555555] transition-colors hover:text-[#999999]"
+          className="font-sans text-[13px] text-muted underline decoration-rule-strong underline-offset-4 transition-colors hover:text-accent"
         >
           Back to home
         </Link>
 
-        <header className="mt-10 max-w-2xl">
-          <p className="text-[13px] font-medium uppercase tracking-widest text-[#60A5FA]">
+        <header className="mt-10 max-w-[680px] border-t border-ink pt-5">
+          <p className="kicker">
             HypeCheck Blog
           </p>
-          <h1 className="mt-4 text-4xl font-bold tracking-tight text-[#F5F5F5] sm:text-5xl">
+          <h1 className="mt-4 font-serif text-4xl font-medium leading-[1.08] tracking-tight text-ink sm:text-5xl">
             Startup validation guides for builders who ship.
           </h1>
-          <p className="mt-5 text-[17px] leading-relaxed text-[#999999]">
+          <p className="mt-5 text-[17px] leading-relaxed text-ink-soft">
             Practical playbooks for testing startup ideas, reading market signals, and deciding what
             deserves your next weekend.
           </p>
         </header>
 
-        <main className="mt-12 grid gap-5">
+        <main className="mt-12 grid">
           {posts.map((post) => (
             <article
               key={post.href}
-              className="rounded-lg border border-[#1A1A1A] bg-[#111111] p-6 transition-colors hover:border-[#2A2A2A]"
+              className="border-t border-ink py-8"
             >
-              <div className="flex flex-wrap gap-2 text-[12px] text-[#666666]">
+              <div className="flex flex-wrap gap-2 font-mono text-[11px] tabular-nums text-muted">
                 <span>{post.date}</span>
                 <span>/</span>
                 <span>{post.readTime}</span>
               </div>
-              <h2 className="mt-4 text-2xl font-semibold tracking-tight text-[#F5F5F5]">
-                <Link href={post.href} className="transition-colors hover:text-[#60A5FA]">
+              <h2 className="mt-4 font-serif text-2xl font-medium tracking-tight text-ink">
+                <Link href={post.href} className="underline decoration-rule-strong underline-offset-4 transition-colors hover:text-accent">
                   {post.title}
                 </Link>
               </h2>
-              <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-[#999999]">
+              <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-soft">
                 {post.description}
               </p>
-              <div className="mt-5 flex flex-wrap gap-2">
+              <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-rule pt-4">
                 {post.keywords.map((keyword) => (
                   <span
                     key={keyword}
-                    className="rounded-full border border-[#222222] px-3 py-1 text-[12px] text-[#888888]"
+                    className="font-mono text-[11px] text-muted"
                   >
                     {keyword}
                   </span>
@@ -78,6 +81,7 @@ export default function BlogPage() {
           ))}
         </main>
       </div>
+      <SiteFooter />
     </div>
   );
 }

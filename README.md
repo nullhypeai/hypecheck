@@ -21,7 +21,7 @@ HypeCheck is a brutally honest AI analyst for startup ideas built by NullHype AI
 ## Features
 
 - **Hype Score:** a single 0 to 100 verdict on your idea's viability
-- **Market Reality Check:** TAM/SAM estimates grounded in real data, not guesswork
+- **Market Reality Check:** market size anchored on figures found during live web research, with the arithmetic shown
 - **Competitive Teardown:** who already exists, why they might win, and where your opening is
 - **Execution Risk Analysis:** technical, regulatory, and go-to-market landmines flagged upfront
 - **Monetization Viability:** whether your pricing model holds up under scrutiny
@@ -49,7 +49,7 @@ No subscriptions. No recurring charges. Purchased credits never expire and are t
 | Framework | [Next.js](https://nextjs.org) (TypeScript) |
 | Styling | [Tailwind CSS](https://tailwindcss.com) |
 | Database & Auth | [Supabase](https://supabase.com) |
-| AI | [Claude API](https://www.anthropic.com) (Anthropic), defaulting to Claude Sonnet 5 |
+| AI | [Claude API](https://www.anthropic.com) (Anthropic): Claude Sonnet 5.5 with web search, Claude Haiku 5.5 input judge |
 | Payments | [Dodo Payments](https://dodopayments.com) |
 | Hosting | [Vercel](https://vercel.com) |
 
@@ -90,8 +90,9 @@ SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
 # Anthropic
 ANTHROPIC_API_KEY=your_anthropic_api_key
-ANTHROPIC_MODEL=claude-sonnet-5
-ANTHROPIC_JUDGE_MODEL=claude-haiku-4-5
+# Optional overrides. Leave unset to use the defaults in code.
+# ANTHROPIC_MODEL=claude-sonnet-5-5
+# ANTHROPIC_JUDGE_MODEL=claude-haiku-5-5
 
 # Dodo Payments
 DODO_SECRET_KEY=your_dodo_secret_key
@@ -106,35 +107,35 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 `ANTHROPIC_MODEL` is optional. If it is not set, HypeCheck defaults to
-`claude-sonnet-5`, Anthropic's balanced model for strong report quality,
-speed, and cost control. You can override it with another supported Claude API
-model when testing quality or cost tradeoffs.
+`claude-sonnet-5-5`. You can override it with another Claude model that supports
+adaptive thinking, the effort parameter, structured outputs and the
+`web_search_20260209` tool when testing quality or cost tradeoffs.
 
 ### Model Configuration
 
-Report generation lives in `src/app/api/hypecheck/route.ts` and calls the
-Claude API with:
+Report generation lives in `src/lib/report/generate.ts` (prompt, JSON schema and
+the Claude call) and is called from `src/app/api/hypecheck/route.ts`, which
+streams progress to the browser. Each report:
 
-- **Adaptive thinking** (`thinking: { type: 'adaptive' }`): the model decides
-  how much reasoning each idea needs, so simple ideas stay fast and cheap
-  while novel ones get deeper analysis.
-- **Effort `medium`** (`output_config: { effort: 'medium' }`): roughly
-  matches Claude Sonnet 4.6 at `high` while keeping latency and cost in
-  check. Drop to `low` for cheaper/faster reports, or raise to `high` for
-  maximum analysis depth.
-- **`max_tokens: 8192`**: covers both thinking tokens and the report JSON.
-  If you lower this, leave headroom — thinking spend counts against it, and
-  truncated responses fail JSON parsing.
+- **Researches the web** with Claude's server-side web search tool (up to 10
+  searches) for competitors, pricing, market figures and real discussions of
+  the problem. Quotes must be verbatim with a URL; the report lists its sources.
+- **Uses structured outputs** (`output_config.format` with a JSON schema), so
+  the response always matches the report shape.
+- **Uses adaptive thinking at effort `medium`.** Raise to `high` for deeper
+  analysis at higher cost and latency.
+- **Streams** with `max_tokens: 32000` and resumes `pause_turn` stops from the
+  search loop.
+- **Handles refusals**: a `cyber` or `frontier_llm` decline is retried once on
+  `claude-sonnet-5`; anything else returns a clear error and no credit is used.
 
-If you override `ANTHROPIC_MODEL`, use a model that supports adaptive
-thinking and the effort parameter (Claude Sonnet 4.6 or newer, Claude Opus
-4.6 or newer). Older models such as Claude Haiku 4.5 reject these parameters
-and requests will fail with a 400 error.
+Typical cost is about $0.20 per report (input tokens from search results, about
+8 searches at $10 per 1,000, and output). Typical time is 40 to 60 seconds.
 
 ### Input Judge
 
 Before a submission reaches the report model, a cheap pre-flight call to
-Claude Haiku 4.5 (`ANTHROPIC_JUDGE_MODEL`, optional override) classifies
+Claude Haiku 5.5 (`ANTHROPIC_JUDGE_MODEL`, optional override) classifies
 whether the text plausibly describes a startup, product, or side-project
 idea. Off-topic prompts — trivia questions, recipes, chit-chat, prompt
 injection attempts — are rejected with a `400` and the code

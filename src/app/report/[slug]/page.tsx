@@ -6,6 +6,8 @@ import { HypeCheckReport } from '@/lib/types'
 import ReportView from '@/components/report/ReportView'
 import ShareButton from '@/components/report/ShareButton'
 import { sanitizeDashes } from '@/lib/sanitizeText'
+import SiteHeader from '@/components/site/SiteHeader'
+import SiteFooter from '@/components/site/SiteFooter'
 
 interface ReportResult {
   report: HypeCheckReport
@@ -75,20 +77,31 @@ export default async function PublicReportPage({
   const isOwner = user?.id === userId
 
   return (
-    <main className="min-h-screen bg-[#0A0A0A] px-4 py-12">
-      <div className="mx-auto flex max-w-[720px] flex-col gap-4">
-        <div className="flex items-center justify-between gap-2">
-          <Link
-            href="/check"
-            className="rounded-lg border border-[#2563EB]/30 bg-[#2563EB]/10 px-3 py-2 text-[13px] font-semibold text-[#60A5FA] transition-colors hover:border-[#2563EB]/50 hover:bg-[#2563EB]/20 hover:text-[#93C5FD]"
-          >
-            {isOwner ? '⚡ Validate another idea' : '✨ Validate your idea →'}
-          </Link>
+    <div className="flex min-h-screen flex-col">
+      <SiteHeader>
+        <Link href="/check" className="bg-ink px-3.5 py-2 font-medium text-paper transition-colors hover:bg-ink-soft">
+          {isOwner ? 'Check another idea' : 'Check your own idea'}
+        </Link>
+      </SiteHeader>
+      <main className="mx-auto w-full max-w-[760px] flex-1 px-4 py-10 sm:px-6 sm:py-14">
+        <div className="mb-8 flex justify-end">
           <ShareButton ideaTitle={sanitizeDashes(report.ideaTitle)} hypeScore={report.hypeScore} />
         </div>
-
         <ReportView report={report} />
-      </div>
-    </main>
+        {!isOwner && (
+          <div className="mt-14 border-t border-ink pt-6 text-center">
+            <p className="font-serif text-[22px] text-ink">Have an idea of your own?</p>
+            <p className="mt-1 text-[14px] text-muted">3 free reports. No subscription.</p>
+            <Link
+              href="/check"
+              className="mt-4 inline-block bg-ink px-6 py-3 text-[14px] font-medium text-paper transition-colors hover:bg-ink-soft"
+            >
+              Run a HypeCheck
+            </Link>
+          </div>
+        )}
+      </main>
+      <SiteFooter />
+    </div>
   )
 }

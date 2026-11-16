@@ -32,21 +32,18 @@ export default function ReportPage() {
 
   if (!report) {
     return (
-      <main className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#2A2A2A] border-t-[#2563EB]" />
-          <p className="text-[13px] text-[#555555]">Loading your report...</p>
-        </div>
+      <main className="flex min-h-screen items-center justify-center">
+        <p className="kicker animate-hc-pulse">Loading your report</p>
       </main>
     )
   }
 
   return (
-    <main className="min-h-screen bg-[#0A0A0A] px-4 py-12">
-      <div className="mx-auto flex max-w-[720px] flex-col gap-4">
+    <main className="px-4 py-12 sm:px-6">
+      <div className="mx-auto flex max-w-[760px] flex-col gap-6">
         <button
           onClick={() => router.push('/check')}
-          className="self-start text-[13px] text-[#555555] hover:text-[#F5F5F5] transition-colors mb-2"
+          className="self-start font-mono text-[11.5px] uppercase tracking-[0.08em] text-muted transition-colors hover:text-ink"
         >
           ← Check another idea
         </button>

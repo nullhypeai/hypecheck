@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import SiteHeader from '@/components/site/SiteHeader'
+import SiteFooter from '@/components/site/SiteFooter'
 
 const authErrorCopy: Record<string, string> = {
   auth_failed: 'Sign in failed. Please try again.',
@@ -29,53 +31,32 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const googleHref = `/auth/sign-in?provider=google&next=${encodeURIComponent(next)}`
 
   return (
-    <main className="min-h-screen bg-[#0A0A0A] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-[400px] flex flex-col gap-8">
-
-        {/* Header */}
-        <div className="flex flex-col gap-2 text-center">
-          <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#555555]">
-            NullHype AI
-          </p>
-          <h1 className="text-2xl font-semibold text-[#F5F5F5]">
-            HypeCheck
+    <div className="flex min-h-screen flex-col">
+      <SiteHeader>
+        <Link href="/blog" className="text-muted transition-colors hover:text-ink">
+          Blog
+        </Link>
+      </SiteHeader>
+      <main className="mx-auto grid w-full max-w-[960px] flex-1 items-center gap-12 px-4 py-14 sm:px-6 md:grid-cols-[1fr_380px]">
+        <div>
+          <p className="kicker">Sign in</p>
+          <h1 className="mt-2 font-serif text-[40px] font-medium leading-[1.08] tracking-[-0.02em] text-ink">
+            Find out if it&apos;s worth building before you build it.
           </h1>
-          <p className="text-[14px] text-[#888888]">
-            Sign in to validate your startup idea
+          <p className="mt-4 max-w-[460px] text-[16px] leading-relaxed text-ink-soft">
+            3 free reports per account. Each one researches real competitors, pricing and discussions, then gives you a
+            verdict and the cheapest test to run next.
           </p>
         </div>
 
-        {/* Auth card */}
-        <div className="rounded-xl border border-[#2A2A2A] bg-[#111111] p-8 flex flex-col gap-4">
-
-          {/* GitHub button */}
-          <Link
-            href={githubHref}
-            className="
-              flex items-center justify-center gap-3 rounded-xl
-              border border-[#2A2A2A] bg-[#1A1A1A] px-6 py-3.5
-              text-[14px] font-semibold text-[#F5F5F5]
-              hover:bg-[#222222] hover:border-[#3A3A3A]
-              transition-colors duration-200
-            "
-          >
+        <div className="flex flex-col gap-3 border-t border-ink pt-6">
+          <Link href={githubHref} className="flex items-center justify-center gap-3 border border-rule-strong bg-surface px-6 py-3.5 text-[15px] font-medium text-ink transition-colors hover:border-ink">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
             </svg>
             Continue with GitHub
           </Link>
-
-          {/* Google button */}
-          <Link
-            href={googleHref}
-            className="
-              flex items-center justify-center gap-3 rounded-xl
-              border border-[#2A2A2A] bg-[#1A1A1A] px-6 py-3.5
-              text-[14px] font-semibold text-[#F5F5F5]
-              hover:bg-[#222222] hover:border-[#3A3A3A]
-              transition-colors duration-200
-            "
-          >
+          <Link href={googleHref} className="flex items-center justify-center gap-3 border border-rule-strong bg-surface px-6 py-3.5 text-[15px] font-medium text-ink transition-colors hover:border-ink">
             <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -84,34 +65,27 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             </svg>
             Continue with Google
           </Link>
+          <p className="mt-1 text-[12px] text-muted">Secure OAuth. No password needed.</p>
 
-          {/* Divider */}
-          <div className="flex items-center gap-3 my-1">
-            <div className="h-px flex-1 bg-[#2A2A2A]" />
-            <p className="text-[11px] text-[#555555]">Secure OAuth. No password needed.</p>
-            <div className="h-px flex-1 bg-[#2A2A2A]" />
-          </div>
-
-          {/* Error */}
           {error && (
-            <div className="rounded-lg border border-[#EF4444]/20 bg-[#EF4444]/5 px-4 py-3">
-              <p className="text-[13px] text-[#EF4444]">{error}</p>
+            <div role="alert" className="border-l-2 border-nobuild bg-nobuild-soft px-4 py-3 text-[14px] text-nobuild">
+              {error}
             </div>
           )}
-        </div>
 
-        {/* Footer */}
-        <p className="text-center text-[12px] leading-relaxed text-[#555555]">
-          By signing in you agree to our{' '}
-          <Link href="/terms" className="underline underline-offset-2 transition-colors hover:text-[#888888]">
-            Terms of Service
-          </Link>
-          {' '}and{' '}
-          <Link href="/privacy" className="underline underline-offset-2 transition-colors hover:text-[#888888]">
-            Privacy Policy
-          </Link>
-        </p>
-      </div>
-    </main>
+          <p className="mt-4 text-[12px] leading-relaxed text-muted">
+            By signing in you agree to our{' '}
+            <Link href="/terms" className="underline decoration-rule-strong underline-offset-2 hover:text-ink">
+              Terms of Service
+            </Link>
+            {' '}and{' '}
+            <Link href="/privacy" className="underline decoration-rule-strong underline-offset-2 hover:text-ink">
+              Privacy Policy
+            </Link>
+          </p>
+        </div>
+      </main>
+      <SiteFooter />
+    </div>
   )
 }

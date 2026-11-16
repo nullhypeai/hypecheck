@@ -9,6 +9,7 @@ export function sanitizeReportText(report: HypeCheckReport): HypeCheckReport {
     ...report,
     ideaTitle: sanitizeDashes(report.ideaTitle),
     oneLinerSummary: sanitizeDashes(report.oneLinerSummary),
+    keyAssumption: report.keyAssumption ? sanitizeDashes(report.keyAssumption) : undefined,
     marketOpportunity: {
       metrics: report.marketOpportunity.metrics.map((metric) => ({
         ...metric,
@@ -31,6 +32,7 @@ export function sanitizeReportText(report: HypeCheckReport): HypeCheckReport {
         quote: sanitizeDashes(signal.quote),
         source: sanitizeDashes(signal.source),
       })),
+      summary: report.demandSignals.summary ? sanitizeDashes(report.demandSignals.summary) : undefined,
     },
     monetisationViability: {
       ...report.monetisationViability,
@@ -49,6 +51,8 @@ export function sanitizeReportText(report: HypeCheckReport): HypeCheckReport {
     nextStep: {
       action: sanitizeDashes(report.nextStep.action),
       rationale: sanitizeDashes(report.nextStep.rationale),
+      successSignal: report.nextStep.successSignal ? sanitizeDashes(report.nextStep.successSignal) : undefined,
     },
+    sources: report.sources?.map((source) => ({ ...source, title: sanitizeDashes(source.title) })),
   }
 }

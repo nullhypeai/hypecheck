@@ -1,21 +1,25 @@
 interface SectionCardProps {
+  number?: string
   title: string
+  aside?: React.ReactNode
   children: React.ReactNode
   className?: string
 }
 
-export default function SectionCard({ title, children, className = '' }: SectionCardProps) {
+// A memo section: numbered kicker, hairline rule, no card chrome.
+export default function SectionCard({ number, title, aside, children, className = '' }: SectionCardProps) {
   return (
-    <div
-      className={`
-        rounded-xl border border-[#2A2A2A] bg-[#111111] p-6
-        ${className}
-      `}
-    >
-      <p className="mb-4 text-[11px] font-semibold uppercase tracking-[2px] text-[#555555]">
-        {title}
-      </p>
+    <section className={`border-t border-ink pt-5 ${className}`}>
+      <div className="mb-5 flex items-baseline justify-between gap-4">
+        <h2 className="flex items-baseline gap-3">
+          {number && <span className="font-mono text-[12px] text-accent">{number}</span>}
+          <span className="font-serif text-[22px] font-medium leading-tight tracking-[-0.01em] text-ink">
+            {title}
+          </span>
+        </h2>
+        {aside && <div className="shrink-0">{aside}</div>}
+      </div>
       {children}
-    </div>
+    </section>
   )
 }

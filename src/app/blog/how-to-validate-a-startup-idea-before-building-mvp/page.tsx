@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SiteHeader from "@/components/site/SiteHeader";
+import SiteFooter from "@/components/site/SiteFooter";
 
 const publishedDate = "2026-06-03";
 const articleUrl =
@@ -103,82 +105,86 @@ const sections = [
 
 export default function StartupIdeaValidationArticle() {
   return (
-    <div className="min-h-screen bg-[#0A0A0A] px-4 py-16">
+    <div className="flex min-h-screen flex-col bg-paper text-ink">
+      <SiteHeader />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
 
-      <article className="mx-auto max-w-3xl">
-        <Link
-          href="/blog"
-          className="text-[13px] text-[#555555] transition-colors hover:text-[#999999]"
-        >
-          Back to blog
-        </Link>
-
-        <header className="mt-10 border-b border-[#1A1A1A] pb-10">
-          <p className="text-[13px] font-medium uppercase tracking-widest text-[#60A5FA]">
-            Startup idea validation
-          </p>
-          <h1 className="mt-4 text-4xl font-bold tracking-tight text-[#F5F5F5] sm:text-5xl">
-            How to Validate a Startup Idea Before Building an MVP
-          </h1>
-          <p className="mt-5 text-[18px] leading-relaxed text-[#999999]">
-            A practical workflow for founders, indie hackers, and developers who want signal
-            before they spend weeks building the wrong thing.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-2 text-[13px] text-[#666666]">
-            <span>Published June 3, 2026</span>
-            <span>/</span>
-            <span>8 min read</span>
-          </div>
-        </header>
-
-        <div className="mt-10 space-y-8 text-[16px] leading-8 text-[#B0B0B0]">
-          <p>
-            Building is cheaper than ever. That is good news for solo founders, but it also creates
-            a trap: you can now spend a weekend building something before you have proved that the
-            problem matters. Startup idea validation exists to slow that mistake down.
-          </p>
-
-          <p>
-            The goal is not to get permission from the market. The goal is to find the strongest
-            evidence you can before committing serious time. A good validation process should tell
-            you whether to build, narrow, reposition, price differently, or walk away.
-          </p>
-
-          {sections.map((section) => (
-            <section key={section.title}>
-              <h2 className="mb-3 mt-10 text-2xl font-semibold tracking-tight text-[#F5F5F5]">
-                {section.title}
-              </h2>
-              <div className="space-y-4">
-                {section.body.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
-              </div>
-            </section>
-          ))}
-
-          <section className="mt-12 rounded-lg border border-[#1A1A1A] bg-[#111111] p-6">
-            <h2 className="text-2xl font-semibold tracking-tight text-[#F5F5F5]">
-              Get a fast first-pass validation report
-            </h2>
-            <p className="mt-3 text-[15px] leading-relaxed text-[#999999]">
-              HypeCheck turns a rough startup idea into a structured report with a Hype Score,
-              competitor analysis, market sizing, execution risks, monetization signals, and a
-              clear build-or-don&apos;t-build verdict.
+      <main className="flex-1">
+        <article className="mx-auto w-full max-w-[728px] px-4 py-12 sm:px-6 sm:py-16">
+          <Link
+            href="/blog"
+            className="font-sans text-[13px] text-muted underline decoration-rule-strong underline-offset-4 transition-colors hover:text-accent"
+          >
+            Back to blog
+          </Link>
+  
+          <header className="mt-10 border-t border-t-ink border-b border-b-rule pt-5 pb-8">
+            <p className="kicker">
+              Startup idea validation
             </p>
-            <Link
-              href="/check"
-              className="mt-5 inline-flex rounded-lg bg-[#2563EB] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1D4ED8]"
-            >
-              Validate your startup idea
-            </Link>
-          </section>
-        </div>
-      </article>
+            <h1 className="mt-4 font-serif text-4xl font-medium leading-[1.08] tracking-tight text-ink sm:text-5xl">
+              How to Validate a Startup Idea Before Building an MVP
+            </h1>
+            <p className="mt-5 font-serif text-[17px] leading-relaxed text-ink-soft">
+              A practical workflow for founders, indie hackers, and developers who want signal
+              before they spend weeks building the wrong thing.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-2 font-mono text-[11px] tabular-nums text-muted">
+              <span>Published June 3, 2026</span>
+              <span>/</span>
+              <span>8 min read</span>
+            </div>
+          </header>
+  
+          <div className="mt-10 space-y-8 font-serif text-[17px] leading-relaxed text-ink-soft">
+            <p>
+              Building is cheaper than ever. That is good news for solo founders, but it also creates
+              a trap: you can now spend a weekend building something before you have proved that the
+              problem matters. Startup idea validation exists to slow that mistake down.
+            </p>
+  
+            <p>
+              The goal is not to get permission from the market. The goal is to find the strongest
+              evidence you can before committing serious time. A good validation process should tell
+              you whether to build, narrow, reposition, price differently, or walk away.
+            </p>
+  
+            {sections.map((section) => (
+              <section key={section.title} className="border-t border-ink pt-5">
+                <h2 className="mb-3 font-serif text-2xl font-medium tracking-tight text-ink">
+                  {section.title}
+                </h2>
+                <div className="space-y-4">
+                  {section.body.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
+              </section>
+            ))}
+  
+            <section className="mt-12 border-t border-ink pt-6">
+              <h2 className="font-serif text-2xl font-medium tracking-tight text-ink">
+                Get a fast first-pass validation report
+              </h2>
+              <p className="mt-3 text-[17px] leading-relaxed text-ink-soft">
+                HypeCheck turns a rough startup idea into a structured report with a Hype Score,
+                competitor analysis, market sizing, execution risks, monetization signals, and a
+                clear build-or-don&apos;t-build verdict.
+              </p>
+              <Link
+                href="/check"
+                className="mt-5 inline-flex font-sans text-sm font-medium text-ink underline decoration-rule-strong underline-offset-4 transition-colors hover:text-accent"
+              >
+                Validate your startup idea
+              </Link>
+            </section>
+          </div>
+        </article>
+      </main>
+      <SiteFooter />
     </div>
   );
 }

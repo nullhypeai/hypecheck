@@ -1,17 +1,16 @@
 import SectionCard from './SectionCard'
 
-function ScoreDots({ score }: { score: number }) {
+function Pips({ score }: { score: number }) {
+  const clamped = Math.max(0, Math.min(5, Math.round(score)))
   return (
-    <div className="flex gap-1.5">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <span
-          key={i}
-          className={`h-2.5 w-2.5 rounded-full ${
-            i < score ? 'bg-[#2563EB]' : 'bg-[#2A2A2A]'
-          }`}
-        />
-      ))}
-    </div>
+    <span className="inline-flex items-center gap-2">
+      <span className="flex gap-[3px]" aria-hidden>
+        {[1, 2, 3, 4, 5].map((i) => (
+          <span key={i} className={`h-[10px] w-[10px] rounded-full ${i <= clamped ? 'bg-ink' : 'bg-rule'}`} />
+        ))}
+      </span>
+      <span className="font-mono text-[11px] text-muted">{clamped}/5</span>
+    </span>
   )
 }
 
@@ -20,42 +19,24 @@ export default function MonetisationViability({
   recommendedModel,
   pricingSuggestion,
   keyRisk,
+  number,
 }: {
   score: number
   recommendedModel: string
   pricingSuggestion: string
   keyRisk: string
+  number?: string
 }) {
   return (
-    <SectionCard title="Monetisation Viability">
-      <div className="flex flex-col gap-5">
-        <div className="flex items-center gap-4">
-          <ScoreDots score={score} />
-          <p className="text-[13px] text-[#888888]">
-            {score}/5 monetisation potential
-          </p>
-        </div>
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-[#555555]">
-            Recommended Model
-          </p>
-          <p className="mt-1 text-[14px] text-[#F5F5F5]">{recommendedModel}</p>
-        </div>
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-[#555555]">
-            Pricing Suggestion
-          </p>
-          <p className="mt-1 text-[14px] text-[#F5F5F5]">{pricingSuggestion}</p>
-        </div>
-        <div className="rounded-lg border border-[#F59E0B]/20 bg-[#F59E0B]/5 px-4 py-3">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-[#F59E0B]">
-            Key Risk
-          </p>
-          <p className="mt-1 text-[13px] leading-relaxed text-[#888888]">
-            {keyRisk}
-          </p>
-        </div>
-      </div>
+    <SectionCard number={number} title="Monetisation" aside={<Pips score={score} />}>
+      <dl className="grid gap-x-6 gap-y-4 sm:grid-cols-[140px_1fr]">
+        <dt className="kicker pt-[3px]">Model</dt>
+        <dd className="text-[15px] font-medium text-ink">{recommendedModel}</dd>
+        <dt className="kicker pt-[3px]">Pricing</dt>
+        <dd className="text-[14px] leading-relaxed text-ink-soft">{pricingSuggestion}</dd>
+        <dt className="kicker pt-[3px] text-nobuild!">Key risk</dt>
+        <dd className="text-[14px] leading-relaxed text-ink-soft">{keyRisk}</dd>
+      </dl>
     </SectionCard>
   )
 }

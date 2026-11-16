@@ -2,7 +2,9 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { HypeCheckReport, Verdict } from '@/lib/types'
-import { getScoreColour, VerdictBadge } from '@/components/report/VerdictBadge'
+import { scoreTone, verdictStyles } from '@/components/report/levels'
+import SiteHeader from '@/components/site/SiteHeader'
+import SiteFooter from '@/components/site/SiteFooter'
 
 interface ReportRow {
   slug: string
@@ -45,82 +47,69 @@ export default async function ReportsPage() {
   const reports: ReportRow[] = error ? [] : (rows ?? [])
 
   return (
-    <main className="min-h-screen bg-[#0A0A0A] px-4 py-12">
-      <div className="mx-auto flex max-w-[720px] flex-col gap-8">
-
-        {/* Header */}
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex flex-col gap-2">
-            <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#555555]">
-              NullHype AI
+    <div className="flex min-h-screen flex-col">
+      <SiteHeader>
+        <Link href="/check" className="bg-ink px-3.5 py-2 font-medium text-paper transition-colors hover:bg-ink-soft">
+          New report
+        </Link>
+      </SiteHeader>
+      <main className="mx-auto w-full max-w-[760px] flex-1 px-4 py-12 sm:px-6 sm:py-16">
+        <div className="flex items-end justify-between gap-4 border-b border-ink pb-3">
+          <h1 className="font-serif text-[36px] font-medium leading-none tracking-[-0.02em] text-ink">My reports</h1>
+          {reports.length > 0 && (
+            <p className="kicker">
+              {reports.length} report{reports.length === 1 ? '' : 's'}
             </p>
-            <h1 className="text-2xl font-semibold text-[#F5F5F5]">My Reports</h1>
-          </div>
-          <Link
-            href="/check"
-            className="shrink-0 mt-1 rounded-lg bg-[#2563EB] px-4 py-2 text-[13px] font-semibold text-white hover:bg-[#1D4ED8] transition-colors"
-          >
-            + New HypeCheck
-          </Link>
+          )}
         </div>
 
-        {/* Empty state */}
         {reports.length === 0 && (
-          <div className="flex flex-col items-center gap-5 rounded-xl border border-[#2A2A2A] bg-[#111111] px-8 py-16 text-center">
-            <p className="text-[32px]">🔮</p>
-            <div className="flex flex-col gap-2">
-              <p className="text-[17px] font-semibold text-[#F5F5F5]">No reports yet</p>
-              <p className="text-[14px] leading-relaxed text-[#888888]">
-                Run your first HypeCheck to get a brutally honest validation report.
-              </p>
-            </div>
+          <div className="py-16">
+            <p className="font-serif text-[22px] text-ink">No reports yet.</p>
+            <p className="mt-2 max-w-[460px] text-[15px] leading-relaxed text-ink-soft">
+              Describe an idea and HypeCheck will research it and tell you whether it is worth building, and what to test
+              first.
+            </p>
             <Link
               href="/check"
-              className="rounded-xl bg-[#2563EB] px-6 py-3 text-[14px] font-semibold text-white hover:bg-[#1D4ED8] transition-colors"
+              className="mt-6 inline-block bg-ink px-6 py-3 text-[14px] font-medium text-paper transition-colors hover:bg-ink-soft"
             >
-              Run HypeCheck →
+              Run your first HypeCheck
             </Link>
           </div>
         )}
 
-        {/* Report list */}
         {reports.length > 0 && (
-          <div className="flex flex-col divide-y divide-[#1A1A1A] rounded-xl border border-[#2A2A2A] bg-[#111111] overflow-hidden">
+          <ul>
             {reports.map((row) => {
               const { ideaTitle, hypeScore, verdict } = row.report_data
-              const colour = getScoreColour(hypeScore)
+              const v = verdictStyles[verdict as Verdict] ?? verdictStyles['Validate First']
               return (
-                <Link
-                  key={row.slug}
-                  href={`/report/${row.slug}`}
-                  className="flex items-center gap-4 px-6 py-4 hover:bg-[#161616] transition-colors"
-                >
-                  {/* Score */}
-                  <span
-                    className="shrink-0 text-[20px] font-bold leading-none tabular-nums"
-                    style={{ color: colour }}
+                <li key={row.slug} className="border-b border-rule">
+                  <Link
+                    href={`/report/${row.slug}`}
+                    className="group grid grid-cols-[56px_1fr_auto] items-center gap-4 py-4 transition-colors hover:bg-surface sm:px-2"
                   >
-                    {hypeScore}
-                  </span>
-
-                  {/* Title + verdict */}
-                  <div className="flex min-w-0 flex-1 flex-col gap-1">
-                    <p className="truncate text-[14px] font-medium text-[#F5F5F5]">
-                      {truncate(ideaTitle, 80)}
-                    </p>
-                    <VerdictBadge verdict={verdict as Verdict} />
-                  </div>
-
-                  {/* Date */}
-                  <span className="shrink-0 text-[12px] text-[#555555]">
-                    {formatRelativeDate(row.created_at)}
-                  </span>
-                </Link>
+                    <span className={`font-serif text-[30px] font-medium leading-none tabular-nums ${scoreTone(hypeScore)}`}>
+                      {hypeScore}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate text-[15px] font-medium text-ink group-hover:underline group-hover:decoration-rule-strong group-hover:underline-offset-4">
+                        {truncate(ideaTitle, 80)}
+                      </span>
+                      <span className={`mt-1 inline-block font-mono text-[10.5px] uppercase tracking-[0.1em] ${v.text}`}>
+                        {v.label}
+                      </span>
+                    </span>
+                    <span className="shrink-0 font-mono text-[11px] text-faint">{formatRelativeDate(row.created_at)}</span>
+                  </Link>
+                </li>
               )
             })}
-          </div>
+          </ul>
         )}
-      </div>
-    </main>
+      </main>
+      <SiteFooter />
+    </div>
   )
 }

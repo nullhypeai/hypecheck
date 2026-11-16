@@ -1,6 +1,7 @@
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { Metadata } from 'next'
 import Link from 'next/link'
+import SiteHeader from '@/components/site/SiteHeader'
 import { redirect } from 'next/navigation'
 import { isAdminEmail } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
@@ -45,14 +46,14 @@ function getSevenDaysAgoIso(): string {
 
 function MetricCard({ label, value, detail }: MetricCardProps) {
   return (
-    <div className="rounded-lg border border-[#222222] bg-[#111111] p-5">
-      <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#666666]">
+    <div className="border-t border-rule py-5">
+      <p className="kicker">
         {label}
       </p>
-      <p className="mt-3 text-3xl font-semibold tabular-nums text-[#F5F5F5]">
+      <p className="mt-3 font-mono text-3xl tabular-nums tracking-tight text-ink">
         {value}
       </p>
-      <p className="mt-2 text-[13px] leading-relaxed text-[#888888]">{detail}</p>
+      <p className="mt-2 text-[13px] leading-relaxed text-muted">{detail}</p>
     </div>
   )
 }
@@ -74,20 +75,23 @@ export default async function AdminPage() {
 
   if (!supabaseUrl || !serviceRoleKey) {
     return (
-      <main className="min-h-screen bg-[#0A0A0A] px-4 py-12">
-        <div className="mx-auto max-w-[720px] rounded-lg border border-[#2A2A2A] bg-[#111111] p-6">
-          <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#666666]">
-            Admin
-          </p>
-          <h1 className="mt-3 text-2xl font-semibold text-[#F5F5F5]">
-            Missing Supabase service role key
-          </h1>
-          <p className="mt-3 text-[14px] leading-relaxed text-[#999999]">
-            Add SUPABASE_SERVICE_ROLE_KEY in the server environment to load private
-            aggregate metrics.
-          </p>
-        </div>
-      </main>
+      <div className="flex min-h-screen flex-col bg-paper text-ink">
+        <SiteHeader />
+        <main className="px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mx-auto max-w-[720px] border-t border-ink pt-5">
+            <p className="kicker">
+              Admin
+            </p>
+            <h1 className="mt-3 font-serif text-3xl font-medium tracking-tight text-ink">
+              Missing Supabase service role key
+            </h1>
+            <p className="mt-3 text-[14px] leading-relaxed text-ink-soft">
+              Add SUPABASE_SERVICE_ROLE_KEY in the server environment to load private
+              aggregate metrics.
+            </p>
+          </div>
+        </main>
+      </div>
     )
   }
 
@@ -157,101 +161,104 @@ export default async function AdminPage() {
     creditRowsResult.error
 
   return (
-    <main className="min-h-screen bg-[#0A0A0A] px-4 py-12">
-      <div className="mx-auto flex max-w-[960px] flex-col gap-8">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex flex-col gap-2">
-            <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#555555]">
-              NullHype AI
-            </p>
-            <h1 className="text-2xl font-semibold text-[#F5F5F5]">
-              HypeCheck Metrics
-            </h1>
-            <p className="max-w-[620px] text-[14px] leading-relaxed text-[#888888]">
-              The tiny founder dashboard: signups, report usage, free-limit pressure,
-              and remaining paid credits.
-            </p>
+    <div className="flex min-h-screen flex-col bg-paper text-ink">
+      <SiteHeader />
+      <main className="px-4 py-12 sm:px-6 sm:py-16">
+        <div className="mx-auto flex max-w-[960px] flex-col gap-8">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex flex-col gap-2">
+              <p className="kicker">
+                NullHype AI
+              </p>
+              <h1 className="font-serif text-4xl font-medium tracking-tight text-ink sm:text-5xl">
+                HypeCheck Metrics
+              </h1>
+              <p className="max-w-[620px] text-[14px] leading-relaxed text-muted">
+                The tiny founder dashboard: signups, report usage, free-limit pressure,
+                and remaining paid credits.
+              </p>
+            </div>
+            <Link
+              href="/reports"
+              className="shrink-0 text-[13px] text-ink underline decoration-rule-strong underline-offset-4 transition-colors hover:text-accent"
+            >
+              My reports
+            </Link>
           </div>
-          <Link
-            href="/reports"
-            className="rounded-lg border border-[#2A2A2A] px-4 py-2 text-center text-[13px] font-semibold text-[#F5F5F5] transition-colors hover:border-[#2563EB] hover:text-[#60A5FA]"
-          >
-            My reports
-          </Link>
+  
+          {hasQueryError && (
+            <div className="border-l-2 border-accent bg-surface px-5 py-4 text-[14px] leading-relaxed text-ink-soft">
+              Some metrics could not be loaded. Check Supabase table permissions and
+              column names before relying on these numbers.
+            </div>
+          )}
+  
+          <section className="grid gap-x-8 border-t border-ink sm:grid-cols-2 lg:grid-cols-3">
+            <MetricCard
+              label="Total signups"
+              value={formatNumber(totalSignups)}
+              detail={`${formatNumber(recentSignups)} in the last 7 days`}
+            />
+            <MetricCard
+              label="Reports generated"
+              value={formatNumber(totalReports)}
+              detail={`${formatNumber(reportsLast7Days)} in the last 7 days`}
+            />
+            <MetricCard
+              label="Activated users"
+              value={formatNumber(usersWithReports)}
+              detail={`${formatPercent(activationRate)} of signups generated a report`}
+            />
+            <MetricCard
+              label="Free limit reached"
+              value={formatNumber(usersAtFreeLimit)}
+              detail={`${formatPercent(freeLimitRate)} of activated users generated 3+ reports`}
+            />
+            <MetricCard
+              label="Credits remaining"
+              value={formatNumber(creditsRemaining)}
+              detail={`${formatNumber(usersWithCredits)} users currently hold paid credits`}
+            />
+            <MetricCard
+              label="Avg reports per signup"
+              value={totalSignups > 0 ? (totalReports / totalSignups).toFixed(1) : '0.0'}
+              detail="Useful after launch traffic starts landing"
+            />
+          </section>
+  
+          <section className="border-t border-ink py-5">
+            <p className="kicker">
+              Launch funnel
+            </p>
+            <div className="mt-5 grid grid-cols-2 gap-6 sm:grid-cols-4">
+              <div>
+                <p className="font-mono text-2xl tabular-nums tracking-tight text-ink">
+                  {formatNumber(totalSignups)}
+                </p>
+                <p className="mt-1 text-[13px] text-muted">Signed up</p>
+              </div>
+              <div>
+                <p className="font-mono text-2xl tabular-nums tracking-tight text-ink">
+                  {formatNumber(usersWithReports)}
+                </p>
+                <p className="mt-1 text-[13px] text-muted">Generated report</p>
+              </div>
+              <div>
+                <p className="font-mono text-2xl tabular-nums tracking-tight text-ink">
+                  {formatNumber(usersAtFreeLimit)}
+                </p>
+                <p className="mt-1 text-[13px] text-muted">Hit free limit</p>
+              </div>
+              <div>
+                <p className="font-mono text-2xl tabular-nums tracking-tight text-ink">
+                  {formatNumber(usersWithCredits)}
+                </p>
+                <p className="mt-1 text-[13px] text-muted">Has paid credits</p>
+              </div>
+            </div>
+          </section>
         </div>
-
-        {hasQueryError && (
-          <div className="rounded-lg border border-[#7F1D1D] bg-[#1A0F0F] px-5 py-4 text-[14px] leading-relaxed text-[#FCA5A5]">
-            Some metrics could not be loaded. Check Supabase table permissions and
-            column names before relying on these numbers.
-          </div>
-        )}
-
-        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <MetricCard
-            label="Total signups"
-            value={formatNumber(totalSignups)}
-            detail={`${formatNumber(recentSignups)} in the last 7 days`}
-          />
-          <MetricCard
-            label="Reports generated"
-            value={formatNumber(totalReports)}
-            detail={`${formatNumber(reportsLast7Days)} in the last 7 days`}
-          />
-          <MetricCard
-            label="Activated users"
-            value={formatNumber(usersWithReports)}
-            detail={`${formatPercent(activationRate)} of signups generated a report`}
-          />
-          <MetricCard
-            label="Free limit reached"
-            value={formatNumber(usersAtFreeLimit)}
-            detail={`${formatPercent(freeLimitRate)} of activated users generated 3+ reports`}
-          />
-          <MetricCard
-            label="Credits remaining"
-            value={formatNumber(creditsRemaining)}
-            detail={`${formatNumber(usersWithCredits)} users currently hold paid credits`}
-          />
-          <MetricCard
-            label="Avg reports per signup"
-            value={totalSignups > 0 ? (totalReports / totalSignups).toFixed(1) : '0.0'}
-            detail="Useful after launch traffic starts landing"
-          />
-        </section>
-
-        <section className="rounded-lg border border-[#222222] bg-[#111111] p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#666666]">
-            Launch funnel
-          </p>
-          <div className="mt-5 grid gap-3 sm:grid-cols-4">
-            <div>
-              <p className="text-2xl font-semibold tabular-nums text-[#F5F5F5]">
-                {formatNumber(totalSignups)}
-              </p>
-              <p className="mt-1 text-[13px] text-[#888888]">Signed up</p>
-            </div>
-            <div>
-              <p className="text-2xl font-semibold tabular-nums text-[#F5F5F5]">
-                {formatNumber(usersWithReports)}
-              </p>
-              <p className="mt-1 text-[13px] text-[#888888]">Generated report</p>
-            </div>
-            <div>
-              <p className="text-2xl font-semibold tabular-nums text-[#F5F5F5]">
-                {formatNumber(usersAtFreeLimit)}
-              </p>
-              <p className="mt-1 text-[13px] text-[#888888]">Hit free limit</p>
-            </div>
-            <div>
-              <p className="text-2xl font-semibold tabular-nums text-[#F5F5F5]">
-                {formatNumber(usersWithCredits)}
-              </p>
-              <p className="mt-1 text-[13px] text-[#888888]">Has paid credits</p>
-            </div>
-          </div>
-        </section>
-      </div>
-    </main>
+      </main>
+    </div>
   )
 }

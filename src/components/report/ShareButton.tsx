@@ -30,18 +30,18 @@ export default function ShareButton({
   }
 
   return (
-    <div className="flex gap-2 self-end">
+    <div className="flex gap-2">
       <button
         onClick={handleCopy}
-        className="rounded-md border border-[#2A2A2A] bg-[#161616] px-3 py-1.5 text-[13px] text-[#F5F5F5] hover:border-[#2563EB] transition-colors"
+        className="border border-rule-strong bg-surface px-3 py-1.5 font-mono text-[11.5px] uppercase tracking-[0.08em] text-ink transition-colors hover:border-ink"
       >
-        {copied ? '✓ Copied' : 'Copy link'}
+        {copied ? 'Copied' : 'Copy link'}
       </button>
       <button
         onClick={handleShareOnX}
-        className="rounded-md bg-[#2563EB] px-3 py-1.5 text-[13px] text-white hover:bg-[#1D4ED8] transition-colors"
+        className="border border-ink bg-ink px-3 py-1.5 font-mono text-[11.5px] uppercase tracking-[0.08em] text-paper transition-colors hover:bg-ink-soft"
       >
-        Share on 𝕏
+        Share on X
       </button>
     </div>
   )

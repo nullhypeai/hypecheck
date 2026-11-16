@@ -10,6 +10,7 @@ export interface SubMetric {
 
 export interface Competitor {
   name: string
+  url?: string | null
   description: string
   threatLevel: ThreatLevel
 }
@@ -17,7 +18,13 @@ export interface Competitor {
 export interface DemandSignal {
   quote: string
   source: string
-  platform: 'Reddit' | 'X' | 'General'
+  platform: 'Reddit' | 'X' | 'Hacker News' | 'Reviews' | 'Forum' | 'General'
+  url?: string | null
+}
+
+export interface Source {
+  title: string
+  url: string
 }
 
 export interface RiskFactor {
@@ -31,6 +38,8 @@ export interface HypeCheckReport {
   hypeScore: number
   verdict: Verdict
   oneLinerSummary: string
+  // Fields marked optional were added with web research (Nov 2026); older saved reports lack them.
+  keyAssumption?: string
   marketOpportunity: {
     metrics: SubMetric[]
   }
@@ -40,6 +49,7 @@ export interface HypeCheckReport {
   }
   demandSignals: {
     signals: DemandSignal[]
+    summary?: string
     overallDemandStrength: ScoreStrength
   }
   monetisationViability: {
@@ -55,5 +65,7 @@ export interface HypeCheckReport {
   nextStep: {
     action: string
     rationale: string
+    successSignal?: string
   }
+  sources?: Source[]
 }

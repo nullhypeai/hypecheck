@@ -6,14 +6,33 @@ import Link from 'next/link'
 import { track } from '@vercel/analytics'
 import { createClient } from '@/lib/supabase/client'
 import { UpgradePrompt } from '@/components/UpgradePrompt'
+import SiteHeader from '@/components/site/SiteHeader'
+import SiteFooter from '@/components/site/SiteFooter'
+import ResearchProgress, { type SearchLine, type StageId } from '@/components/check/ResearchProgress'
 
-const PLACEHOLDER = `Example: A web app where developers paste their GitHub repo URL and get an instant AI-generated README, contributing guide, and documentation site. Targeting solo developers and small teams who hate writing docs.`
+const PLACEHOLDER = `Example: Two-way SMS reminders for independent dental clinics. When a patient cancels, we text the waitlist and fill the slot automatically. Integrates with Dentrix and Open Dental. $149/month per clinic.`
+
+const PROMPTS = [
+  'Who is the customer, as specifically as you can say it?',
+  'What do they use today instead?',
+  'How would you charge, and roughly how much?',
+]
+
+type StreamEvent =
+  | { type: 'phase'; phase: 'researching' | 'writing' | 'saving' }
+  | { type: 'search'; query: string }
+  | { type: 'results'; count: number; domains: string[] }
+  | { type: 'done'; slug: string }
+  | { type: 'error'; message: string }
 
 export default function CheckPage() {
   const [idea, setIdea] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
+  const [stage, setStage] = useState<StageId>('checking')
+  const [searches, setSearches] = useState<SearchLine[]>([])
+  const [startedAt, setStartedAt] = useState(0)
   const router = useRouter()
 
   const supabase = createClient()
@@ -33,182 +52,182 @@ export default function CheckPage() {
   const isValid = idea.trim().length >= 10
   const isNearLimit = characterCount > 1800
 
+  function fail(message: string) {
+    setError(message)
+    setLoading(false)
+  }
+
+  function applyEvent(event: StreamEvent): string | null {
+    switch (event.type) {
+      case 'phase':
+        setStage(event.phase === 'researching' ? 'planning' : event.phase)
+        return null
+      case 'search':
+        setStage((s) => (s === 'planning' || s === 'checking' ? 'searching' : s))
+        setSearches((prev) =>
+          prev.some((line) => line.query === event.query) ? prev : [...prev, { query: event.query }],
+        )
+        return null
+      case 'results':
+        setSearches((prev) => {
+          // Attach to the latest search that has no results yet.
+          const idx = prev.findLastIndex((line) => line.count === undefined)
+          if (idx === -1) return prev
+          const next = [...prev]
+          next[idx] = { ...next[idx], count: event.count, domains: event.domains }
+          return next
+        })
+        return null
+      case 'done':
+        return event.slug
+      case 'error':
+        throw new Error(event.message)
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!isValid || loading) return
 
     setLoading(true)
     setError('')
+    setStage('checking')
+    setSearches([])
+    setStartedAt(Date.now())
 
+    let response: Response
     try {
-      const response = await fetch('/api/hypecheck', {
+      response = await fetch('/api/hypecheck', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ idea }),
       })
+    } catch {
+      fail('Network error. Please check your connection and try again.')
+      return
+    }
 
-      const data = await response.json()
-
-      // Free tier exhausted. Show upgrade modal instead of error message.
+    // Checks that fail before research starts come back as plain JSON.
+    if (!response.ok || !response.body || response.headers.get('content-type')?.includes('application/json')) {
+      const data = await response.json().catch(() => ({}))
       if (response.status === 403 && data.error === 'FREE_TIER_EXHAUSTED') {
         track('paywall_shown', { product: 'hypecheck' })
         setShowUpgradePrompt(true)
         setLoading(false)
         return
       }
-
-      if (!response.ok) {
-        setError(data.error || 'Something went wrong. Please try again.')
-        setLoading(false)
-        return
-      }
-
-      track('scan_run', { product: 'hypecheck' })
-      // Route to the canonical public URL for this report
-      router.push(`/report/${data.slug}`)
-    } catch {
-      setError('Network error. Please check your connection and try again.')
-      setLoading(false)
+      fail(data.error || 'Something went wrong. Please try again.')
+      return
     }
+
+    // Research has started: read NDJSON progress events until we get a slug or an error.
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder()
+    let buffer = ''
+    let slug: string | null = null
+
+    try {
+      while (!slug) {
+        const { done, value } = await reader.read()
+        if (value) buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        buffer = lines.pop() ?? ''
+        for (const line of lines) {
+          if (!line.trim()) continue
+          slug = applyEvent(JSON.parse(line) as StreamEvent) ?? slug
+        }
+        if (done) break
+      }
+    } catch (err) {
+      track('scan_failed', { product: 'hypecheck' })
+      fail(err instanceof Error && err.message ? err.message : 'Something went wrong. Please try again.')
+      return
+    }
+
+    if (!slug) {
+      fail('The connection dropped before the report finished. If it completed, it will appear in My reports in a minute.')
+      return
+    }
+
+    track('scan_run', { product: 'hypecheck' })
+    document.title = 'Report ready · HypeCheck'
+    router.push(`/report/${slug}`)
   }
 
   return (
-    <main className="min-h-screen bg-[#0A0A0A] px-4 py-12">
+    <div className="flex min-h-screen flex-col">
+      {showUpgradePrompt && <UpgradePrompt onClose={() => setShowUpgradePrompt(false)} />}
 
-      {/* Upgrade modal renders on top of everything when free tier is exhausted */}
-      {showUpgradePrompt && (
-        <UpgradePrompt onClose={() => setShowUpgradePrompt(false)} />
-      )}
+      <SiteHeader>
+        <Link href="/reports" className="text-muted transition-colors hover:text-ink">
+          My reports
+        </Link>
+        <button onClick={handleSignOut} className="text-muted transition-colors hover:text-ink">
+          Sign out
+        </button>
+      </SiteHeader>
 
-      <div className="mx-auto flex max-w-[720px] flex-col gap-8">
-
-        {/* Header */}
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-          <div className="flex flex-1 flex-col gap-3 text-center sm:pr-4">
-            <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#999999]">
-              NullHype AI
-            </p>
-            <h1 className="text-3xl font-semibold text-[#F5F5F5]">
-              HypeCheck
+      <main className="mx-auto w-full max-w-[720px] flex-1 px-4 py-12 sm:px-6 sm:py-16">
+        {loading ? (
+          <ResearchProgress stage={stage} searches={searches} startedAt={startedAt} idea={idea.trim()} />
+        ) : (
+          <>
+            <p className="kicker">New report</p>
+            <h1 className="mt-2 font-serif text-[36px] font-medium leading-[1.1] tracking-[-0.02em] text-ink sm:text-[44px]">
+              What are you thinking of building?
             </h1>
-            <p className="text-[15px] leading-relaxed text-[#888888]">
-              Describe your startup or side project idea. Get a brutally honest
-              AI generated validation report in seconds.
+            <p className="mt-4 max-w-[560px] text-[16px] leading-relaxed text-ink-soft">
+              HypeCheck researches competitors, pricing and real discussions on the web, then tells you whether the idea is
+              worth your next few months, and what to test first.
             </p>
-          </div>
-          <div className="mt-1 flex shrink-0 items-center justify-center gap-4 sm:justify-end">
-            <Link
-              href="/reports"
-              className="text-[13px] text-[#888888] hover:text-[#F5F5F5] transition-colors"
-            >
-              My reports
-            </Link>
-            <button
-              onClick={handleSignOut}
-              className="text-[13px] text-[#888888] hover:text-[#F5F5F5] transition-colors"
-            >
-              Sign out
-            </button>
-          </div>
-        </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="idea"
-              className="text-center text-[12px] font-semibold uppercase tracking-wider text-[#555555]"
-            >
-              Your Idea
-            </label>
-            <textarea
-              id="idea"
-              value={idea}
-              onChange={(e) => setIdea(e.target.value)}
-              placeholder={PLACEHOLDER}
-              rows={8}
-              maxLength={2000}
-              disabled={loading}
-              className="
-                w-full resize-none rounded-xl border border-[#2A2A2A] bg-[#111111]
-                px-5 py-4 text-[15px] leading-relaxed text-[#F5F5F5]
-                placeholder:text-[#333333]
-                focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]/50
-                disabled:opacity-50
-                transition-colors duration-200
-              "
-            />
-            <div className="flex items-center justify-between">
-              <p className="text-[12px] text-[#555555]">
-                Be specific. The more details you give, the better the report.
-              </p>
-              <p
-                className={`text-[12px] ${
-                  isNearLimit ? 'text-[#F59E0B]' : 'text-[#555555]'
-                }`}
-              >
-                {characterCount}/2000
-              </p>
-            </div>
-          </div>
+            <form onSubmit={handleSubmit} className="mt-10 flex flex-col gap-3">
+              <label htmlFor="idea" className="kicker">
+                Your idea
+              </label>
+              <textarea
+                id="idea"
+                value={idea}
+                onChange={(e) => setIdea(e.target.value)}
+                placeholder={PLACEHOLDER}
+                rows={8}
+                maxLength={2000}
+                className="w-full resize-y border border-faint bg-surface px-4 py-3.5 text-[16px] leading-relaxed text-ink placeholder:text-faint focus:border-ink"
+              />
+              <div className="flex items-start justify-between gap-4">
+                <ul className="flex flex-col gap-1 text-[12.5px] text-muted">
+                  {PROMPTS.map((p) => (
+                    <li key={p} className="before:mr-2 before:text-accent before:content-['/']">
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+                <p className={`shrink-0 font-mono text-[11px] ${isNearLimit ? 'text-validate' : 'text-faint'}`}>
+                  {characterCount}/2000
+                </p>
+              </div>
 
-          {/* Error message */}
-          {error && (
-            <div className="rounded-lg border border-[#EF4444]/20 bg-[#EF4444]/5 px-4 py-3">
-              <p className="text-[13px] text-[#EF4444]">{error}</p>
-            </div>
-          )}
+              {error && (
+                <div role="alert" className="border-l-2 border-nobuild bg-nobuild-soft px-4 py-3 text-[14px] text-nobuild">
+                  {error}
+                </div>
+              )}
 
-          {/* Submit button */}
-          <button
-            type="submit"
-            disabled={!isValid || loading}
-            className={`
-              flex items-center justify-center gap-3 rounded-xl
-              px-6 py-4 text-[15px] font-semibold text-white
-              disabled:cursor-not-allowed
-              transition-all duration-300
-              ${
-                loading
-                  ? 'bg-[#EA580C] hover:bg-[#EA580C]'
-                  : 'bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-40'
-              }
-            `}
-          >
-            {loading ? (
-              <>
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                Analysing your idea...
-              </>
-            ) : (
-              'Run HypeCheck'
-            )}
-          </button>
-        </form>
-
-        {/* Trust signals */}
-        <div className="flex flex-wrap gap-6 border-t border-[#1A1A1A] pt-6">
-          {[
-            'Brutally honest scoring',
-            'Real competitor analysis',
-            'Actionable next steps',
-          ].map((signal) => (
-            <div key={signal} className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#2563EB]" />
-              <p className="text-[13px] text-[#555555]">{signal}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-      <footer className="py-6 text-center text-xs text-[#555555]">
-        <Link href="/privacy" className="transition-colors hover:text-[#888888]">
-          Privacy Policy
-        </Link>
-        <span className="mx-2">·</span>
-        <Link href="/terms" className="transition-colors hover:text-[#888888]">
-          Terms of Service
-        </Link>
-      </footer>
-    </main>
+              <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <button
+                  type="submit"
+                  disabled={!isValid}
+                  className="bg-ink px-6 py-3.5 text-[15px] font-medium text-paper transition-colors hover:bg-ink-soft disabled:cursor-not-allowed disabled:opacity-35"
+                >
+                  Run HypeCheck
+                </button>
+                <p className="text-[12.5px] text-muted">Usually ready in under 2 minutes. You will see the research as it happens.</p>
+              </div>
+            </form>
+          </>
+        )}
+      </main>
+      <SiteFooter />
+    </div>
   )
 }

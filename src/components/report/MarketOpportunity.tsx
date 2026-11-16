@@ -1,42 +1,19 @@
-import { SubMetric, ScoreStrength } from '@/lib/types'
+import { SubMetric } from '@/lib/types'
 import SectionCard from './SectionCard'
+import { StrengthMeter } from './levels'
 
-function StrengthDot({ strength }: { strength: ScoreStrength }) {
-  const colour =
-    strength === 'strong'
-      ? 'bg-[#22C55E]'
-      : strength === 'moderate'
-      ? 'bg-[#F59E0B]'
-      : 'bg-[#EF4444]'
-  return <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${colour}`} />
-}
-
-function MetricRow({ metric }: { metric: SubMetric }) {
+export default function MarketOpportunity({ metrics, number }: { metrics: SubMetric[]; number?: string }) {
   return (
-    <div className="flex items-start gap-3">
-      <StrengthDot strength={metric.strength} />
-      <div>
-        <p className="text-[12px] font-semibold uppercase tracking-wide text-[#888888]">
-          {metric.label}
-        </p>
-        <p className="mt-0.5 text-[14px] leading-relaxed text-[#F5F5F5]">
-          {metric.insight}
-        </p>
-      </div>
-    </div>
-  )
-}
-
-export default function MarketOpportunity({
-  metrics,
-}: {
-  metrics: SubMetric[]
-}) {
-  return (
-    <SectionCard title="Market Opportunity">
-      <div className="flex flex-col gap-5">
+    <SectionCard number={number} title="Market opportunity">
+      <div className="grid gap-6 sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-rule">
         {metrics.map((m, i) => (
-          <MetricRow key={i} metric={m} />
+          <div key={i} className="sm:px-5 sm:first:pl-0 sm:last:pr-0">
+            <p className="kicker">{m.label}</p>
+            <div className="mt-2">
+              <StrengthMeter strength={m.strength} />
+            </div>
+            <p className="mt-3 text-[14px] leading-relaxed text-ink-soft">{m.insight}</p>
+          </div>
         ))}
       </div>
     </SectionCard>
