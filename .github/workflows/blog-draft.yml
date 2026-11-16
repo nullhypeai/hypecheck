@@ -1,0 +1,73 @@
+# Drafts one blog post from content/blog-backlog.yml and opens it as a draft pull request.
+# It never pushes to main: every draft waits for a human edit and merge (see content/blog/README.md).
+#
+# Setup (once):
+#   1. Repository secret ANTHROPIC_API_KEY.
+#   2. Repository variable BLOG_DRAFTS_ENABLED = true to turn on the schedule. Manual runs work without it.
+#   3. Settings > Actions > General > Workflow permissions: tick
+#      "Allow GitHub Actions to create and approve pull requests".
+# Optional repository variables: BLOG_DRAFT_MODEL, BLOG_DRAFT_MAX_OPEN (default 3).
+#
+# Cost: about $0.25 to $0.40 per draft, so roughly $2 to $4 a month on this schedule. A run is skipped
+# without calling the API when BLOG_DRAFT_MAX_OPEN draft PRs are already waiting for review.
+
+name: Blog draft
+
+on:
+  schedule:
+    - cron: "0 13 * * 1,4" # Mondays and Thursdays, 13:00 UTC
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: Backlog slug to draft (leave blank for the next todo topic)
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: blog-draft
+  cancel-in-progress: false
+
+jobs:
+  draft:
+    if: github.event_name == 'workflow_dispatch' || vars.BLOG_DRAFTS_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Draft and open a pull request
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+          BLOG_DRAFT_MODEL: ${{ vars.BLOG_DRAFT_MODEL }}
+          BLOG_DRAFT_MAX_OPEN: ${{ vars.BLOG_DRAFT_MAX_OPEN }}
+          SLUG: ${{ inputs.slug }}
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::error::Add the ANTHROPIC_API_KEY repository secret to run the blog drafter."
+            exit 1
+          fi
+          if [ -n "$SLUG" ]; then
+            npm run blog:draft -- --pr --slug "$SLUG"
+          else
+            npm run blog:draft -- --pr
+          fi

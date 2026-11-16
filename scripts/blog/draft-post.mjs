@@ -11,7 +11,9 @@
 //   node --env-file=.env.local scripts/blog/draft-post.mjs --slug pre-selling-before-you-build
 //   node scripts/blog/draft-post.mjs --dry-run                        # show the chosen topic and prompt, no API call
 //
-// Env: ANTHROPIC_API_KEY (required), BLOG_DRAFT_MODEL (default claude-sonnet-5-5).
+// Env: ANTHROPIC_API_KEY (required), BLOG_DRAFT_MODEL (default claude-sonnet-5-5),
+//      BLOG_DRAFT_MAX_OPEN (with --pr, skip when this many draft PRs are open; default 3).
+// Scheduled runs: .github/workflows/blog-draft.yml (Mondays and Thursdays).
 // Typical cost with the default model: about $0.25 to $0.50 per draft.
 
 import { execFileSync } from 'node:child_process'
@@ -27,6 +29,9 @@ const MODEL = process.env.BLOG_DRAFT_MODEL?.trim() || 'claude-sonnet-5-5'
 const MAX_SEARCHES = 12
 const MAX_FETCHES = 5
 const MAX_CONTINUATIONS = 4
+const DRAFT_BRANCH_PREFIX = 'blog/draft-'
+// With --pr, skip the run (exit 0, no API call) when this many draft PRs are already open.
+const MAX_OPEN_DRAFTS = Number(process.env.BLOG_DRAFT_MAX_OPEN) || 3
 // USD per million tokens / per search, for the cost line in the PR. Update if pricing changes.
 const PRICES = {
   'claude-sonnet-5-5': { input: 2, output: 10, cacheRead: 0.1, cacheWrite: 2.5 },
@@ -46,7 +51,7 @@ function parseArgs(argv) {
     else if (a === '--base') args.base = argv[++i]
     else if (a === '--remote') args.remote = argv[++i]
     else if (a === '--help' || a === '-h') {
-      console.log(fs.readFileSync(new URL(import.meta.url), 'utf8').split('\n').slice(1, 16).join('\n'))
+      console.log(fs.readFileSync(new URL(import.meta.url), 'utf8').split('\n').slice(1, 18).join('\n'))
       process.exit(0)
     } else fail(`Unknown argument: ${a}`)
   }
@@ -60,6 +65,28 @@ function fail(message) {
 
 function git(...args) {
   return execFileSync('git', args, { cwd: ROOT, encoding: 'utf8' }).trim()
+}
+
+// Slugs that already have a blog/draft-<slug> branch on the remote.
+function draftBranches(remote) {
+  const out = git('ls-remote', '--heads', remote, `refs/heads/${DRAFT_BRANCH_PREFIX}*`)
+  return new Set(
+    out
+      .split('\n')
+      .map((line) => line.split('refs/heads/')[1])
+      .filter(Boolean)
+      .map((ref) => ref.slice(DRAFT_BRANCH_PREFIX.length)),
+  )
+}
+
+// Open pull requests from earlier drafter runs, so unreviewed drafts don't pile up.
+function openDraftPrs(base) {
+  const out = execFileSync(
+    'gh',
+    ['pr', 'list', '--state', 'open', '--base', base, '--limit', '100', '--json', 'headRefName'],
+    { cwd: ROOT, encoding: 'utf8' },
+  )
+  return JSON.parse(out).filter((pr) => pr.headRefName.startsWith(DRAFT_BRANCH_PREFIX))
 }
 
 // ── Backlog and existing posts ─────────────────────────────────────────────
@@ -442,19 +469,29 @@ async function main() {
   const args = parseArgs(process.argv.slice(2))
 
   let branch = null
+  let picked = null
   if (args.pr && !args.dryRun) {
     if (git('status', '--porcelain')) fail('Working tree has uncommitted changes. Commit or stash them before using --pr.')
     git('fetch', args.remote, args.base)
-    // Read the backlog from the base branch so the topic choice matches what will be merged.
+    const open = openDraftPrs(args.base)
+    if (!args.slug && open.length >= MAX_OPEN_DRAFTS) {
+      console.error(`Skipping: ${open.length} blog draft PRs are already open (limit ${MAX_OPEN_DRAFTS}). Review or close them first.`)
+      return
+    }
+    // Read the backlog from the base branch so the topic choice matches what will be merged, and skip
+    // topics that already have a draft branch (a PR from an earlier run that is not merged yet).
+    const taken = draftBranches(args.remote)
     const peek = YAML.parse(git('show', `${args.remote}/${args.base}:content/blog-backlog.yml`))
-    const next = args.slug ?? peek.find((t) => (t.status ?? 'todo') === 'todo')?.slug
-    if (!next) fail('No `todo` topics left in the backlog on the base branch')
+    const next = args.slug ?? peek.find((t) => (t.status ?? 'todo') === 'todo' && !taken.has(t.slug))?.slug
+    if (!next) fail('No `todo` topics left in the backlog on the base branch without an open draft. Add topics to content/blog-backlog.yml.')
+    if (taken.has(next)) fail(`Branch blog/draft-${next} already exists on ${args.remote}. Merge or delete it first.`)
+    picked = next
     branch = `blog/draft-${next}`
     git('switch', '-c', branch, `${args.remote}/${args.base}`)
   }
 
   const doc = loadBacklog()
-  const { topic, index } = pickTopic(doc, args.slug)
+  const { topic, index } = pickTopic(doc, args.slug ?? picked)
   const posts = existingPosts()
   console.error(`Topic: ${topic.slug}`)
 
