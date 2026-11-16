@@ -1,3 +1,5 @@
+> **Maintainer notes for the hosted instance at hypecheck.nullhype.tech.** If you are self-hosting, ignore this file and follow [docs/self-hosting.md](docs/self-hosting.md). Nothing here (project refs, team names, URLs) applies to your deployment.
+
 # HypeCheck — build context (resume here)
 
 AI startup-idea validator. Describe an idea → structured report (Hype Score, competitors, market sizing, risks, monetization, demand signals, build/don't-build verdict).

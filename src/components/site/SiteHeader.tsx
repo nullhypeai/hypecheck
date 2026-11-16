@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { REPO_URL } from '@/lib/site'
 
 export function Wordmark({ className = '' }: { className?: string }) {
   return (
@@ -22,9 +23,17 @@ export default function SiteHeader({ children }: { children?: React.ReactNode })
         <nav className="flex items-center gap-4 text-[13px] sm:gap-6">
           {children ?? (
             <>
-              <Link href="/blog" className="text-muted transition-colors hover:text-ink">
+              <Link href="/blog" className="hidden text-muted transition-colors hover:text-ink sm:inline">
                 Blog
               </Link>
+              <a
+                href={REPO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted transition-colors hover:text-ink"
+              >
+                GitHub
+              </a>
               <Link href="/login" className="text-muted transition-colors hover:text-ink">
                 Sign in
               </Link>

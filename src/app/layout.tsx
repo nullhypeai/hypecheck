@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
@@ -20,7 +21,7 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://hypecheck.nullhype.tech"),
+  metadataBase: new URL(SITE_URL),
   title: "HypeCheck - AI Startup Idea Validator",
   description:
     "Describe your startup idea in plain language. Get a Hype Score, competitor analysis, market sizing, and a Build or Don't Build verdict, powered by AI.",
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
     title: "HypeCheck - AI Startup Idea Validator",
     description:
       "Open-source AI reality checks for startup ideas. Get a Hype Score, competitors, market sizing, risks, monetization signals, and a build-or-don't-build verdict.",
-    url: "https://hypecheck.nullhype.tech",
+    url: SITE_URL,
     siteName: "HypeCheck",
     type: "website",
   },

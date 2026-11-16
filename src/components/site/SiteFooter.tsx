@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { REPO_URL, SELF_HOSTING_URL } from '@/lib/site'
 
 export default function SiteFooter() {
   return (
@@ -11,13 +12,11 @@ export default function SiteFooter() {
         </p>
         <nav className="flex flex-wrap gap-x-5 gap-y-2">
           <Link href="/blog" className="hover:text-ink">Blog</Link>
-          <a
-            href="https://github.com/nullhypeai/hypecheck"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-ink"
-          >
-            Open source
+          <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="hover:text-ink">
+            Open source on GitHub
+          </a>
+          <a href={SELF_HOSTING_URL} target="_blank" rel="noopener noreferrer" className="hover:text-ink">
+            Self-host
           </a>
           <Link href="/privacy" className="hover:text-ink">Privacy</Link>
           <Link href="/terms" className="hover:text-ink">Terms</Link>

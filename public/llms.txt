@@ -36,6 +36,13 @@ HypeCheck is built for indie hackers, developers, product builders, and small te
 ## Technology
 HypeCheck is an open-source SaaS built with Next.js, Supabase, Claude Sonnet 5.5 with live web search by default, Dodo Payments, and Vercel. The Claude model can be overridden with `ANTHROPIC_MODEL`. It includes authentication, report generation, one-time credit payments, report history, legal pages, and public report sharing.
 
+## Self-hosting
+HypeCheck is MIT licensed. To run your own copy, follow the step-by-step guide, which is written for both people and coding agents:
+
+- Guide: https://github.com/nullhypeai/hypecheck/blob/main/docs/self-hosting.md
+- Agent instructions: https://github.com/nullhypeai/hypecheck/blob/main/AGENTS.md
+- Database schema: https://github.com/nullhypeai/hypecheck/tree/main/supabase/migrations
+
 ## Markdown Mirrors
 Clean AI-readable markdown mirrors are available here:
 
@@ -57,7 +64,7 @@ Each account gets 3 free reports. After that, a single report credit costs $5, a
 No. HypeCheck uses one-time report credits. There are no subscriptions or recurring charges.
 
 ### Is HypeCheck open source?
-Yes. The public repository is available at https://github.com/nullhypeai/hypecheck.
+Yes. The public repository is available at https://github.com/nullhypeai/hypecheck, and it includes a self-hosting guide at docs/self-hosting.md.
 
 ### Does HypeCheck replace customer discovery?
 No. HypeCheck is designed to catch weak assumptions early. It does not replace customer interviews, landing page tests, or real market validation.

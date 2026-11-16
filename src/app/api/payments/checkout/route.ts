@@ -2,10 +2,13 @@ import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 import DodoPayments from 'dodopayments'
 
-const dodo = new DodoPayments({
-  bearerToken: process.env.DODO_SECRET_KEY!,
-  environment: process.env.DODO_ENVIRONMENT === 'test_mode' ? 'test_mode' : 'live_mode',
-})
+// Created per request so the app builds (and runs without payments) when Dodo env vars are unset.
+function dodoClient() {
+  return new DodoPayments({
+    bearerToken: process.env.DODO_SECRET_KEY!,
+    environment: process.env.DODO_ENVIRONMENT === 'test_mode' ? 'test_mode' : 'live_mode',
+  })
+}
 
 const PRODUCTS = {
   single: {
@@ -31,7 +34,7 @@ export async function POST(req: NextRequest) {
     const tier = body.tier === 'pack' ? 'pack' : 'single'
     const product = PRODUCTS[tier]
 
-    const session = await dodo.payments.create({
+    const session = await dodoClient().payments.create({
       billing: {
         city: '',
         country: 'US',

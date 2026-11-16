@@ -1,189 +1,164 @@
 ![MIT License](https://img.shields.io/badge/license-MIT-green.svg)
-![Next.js](https://img.shields.io/badge/Next.js-black?logo=next.js&logoColor=white)
-![Claude](https://img.shields.io/badge/Claude-D97757?logo=anthropic&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js&logoColor=white)
+![Claude](https://img.shields.io/badge/Claude-Sonnet%205.5-D97757?logo=anthropic&logoColor=white)
 
 # HypeCheck
 
-**An AI-powered startup idea validator for indie hackers and builders.**
+**Find out if a startup idea is worth building, before you build it.**
 
-Got a startup idea? HypeCheck cuts through the noise. It stress-tests your concept against market reality, identifies blindspots, and tells you whether you're sitting on a genuine opportunity or a well-disguised dead end.
+Describe an idea in a few sentences. HypeCheck searches the web for real competitors, prices, market figures and people describing the problem. Then it gives you:
+- a scored verdict: Build, Validate first, or Don't build;
+- the assumption most likely to be wrong;
+- one cheap test to run this week, with a pass/fail target.
 
-**Live at [hypecheck.nullhype.tech](https://hypecheck.nullhype.tech)**
+Every claim links to its source. When there's no evidence, the report says so instead of inventing some.
 
----
-
-## What It Is
-
-HypeCheck is a brutally honest AI analyst for startup ideas built by NullHype AI. Submit your idea and receive a structured report covering market size, competitive landscape, demand signals, execution risk, monetization viability, and an overall Hype Score. No flattery, no filler. Just signal.
-
----
-
-## Features
-
-- **Hype Score:** a single 0 to 100 verdict on your idea's viability
-- **Market Reality Check:** market size anchored on figures found during live web research, with the arithmetic shown
-- **Competitive Teardown:** who already exists, why they might win, and where your opening is
-- **Execution Risk Analysis:** technical, regulatory, and go-to-market landmines flagged upfront
-- **Monetization Viability:** whether your pricing model holds up under scrutiny
-- **Shareable Reports:** every report gets a public link you can send to co-founders or investors
-- **Report History:** signed-in users can revisit past reports any time
+**Hosted version:** [hypecheck.nullhype.tech](https://hypecheck.nullhype.tech). 3 free reports, no card.
+**Run your own:** see [Self-hosting](#self-hosting). The full guide is [docs/self-hosting.md](docs/self-hosting.md).
 
 ---
 
-## Pricing
+## What a report contains
 
-| Option | Price | What you get |
-|---|---|---|
-| Free tier | **$0** | 3 reports per account |
-| Single report | **$5 one-time** | 1 additional report credit |
-| 10 report pack | **$8.99 one-time** | 10 additional report credits |
-
-No subscriptions. No recurring charges. Purchased credits never expire and are tied to your account.
-
----
-
-## Tech Stack
-
-| Layer | Technology |
+| Section | What it tells you |
 |---|---|
-| Framework | [Next.js](https://nextjs.org) (TypeScript) |
-| Styling | [Tailwind CSS](https://tailwindcss.com) |
-| Database & Auth | [Supabase](https://supabase.com) |
-| AI | [Claude API](https://www.anthropic.com) (Anthropic): Claude Sonnet 5.5 with web search, Claude Haiku 5.5 input judge |
-| Payments | [Dodo Payments](https://dodopayments.com) |
-| Hosting | [Vercel](https://vercel.com) |
+| Hype Score and verdict | 0 to 100, with Build at 70 and above, Validate first from 40 to 69, Don't build below 40 |
+| The bet you're making | The single assumption the idea depends on that is most likely to be wrong |
+| Do this next | A test you can run within a week, with a target and what result means keep going or stop |
+| Market opportunity | Size, growth and timing, anchored on figures found online, with estimates' arithmetic shown |
+| Competitive landscape | Real competitors and substitutes with links, what they charge, and where they fall short |
+| Demand signals | Verbatim quotes from people describing the problem, with links, or a plain statement that none were found |
+| Monetisation and execution risk | A pricing suggestion anchored on competitors, and the top three risks with mitigations |
+| Sources | Every page the report relied on |
+
+Reports have public share links, and signed-in users keep a history.
 
 ---
 
-## Running Locally
+## How it works
 
-**Prerequisites:** Node.js 20+, a Supabase project, an Anthropic API key, and a Dodo Payments account.
+```
+Browser (/check)                      Server (/api/hypecheck)                 Anthropic API
+────────────────                      ───────────────────────                 ─────────────
+submit idea  ───────────────────────▶ auth + credit check (Supabase)
+                                      judge: is this a business idea? ──────▶ Claude Haiku 5.5
+             ◀── NDJSON progress ──── generate report ───────────────────────▶ Claude Sonnet 5.5
+live steps, search queries,             (web search up to 10x,                   + web_search tool
+timer                                    JSON-schema output)
+             ◀── { done, slug } ───── save report + deduct credit (Supabase)
+redirect to /report/<slug>
+```
+
+- **Report logic:** [`src/lib/report/generate.ts`](src/lib/report/generate.ts) holds the system prompt, scoring rubric, JSON schema and the Claude call. Start here to change the analysis.
+- **API route:** [`src/app/api/hypecheck/route.ts`](src/app/api/hypecheck/route.ts) handles auth, metering, the input judge and streaming progress. The job is registered with `after()`, so a report still saves if the user closes the tab.
+- **Cost and time:** about $0.20 and 30 to 60 seconds per report. The judge costs a fraction of a cent and rejects non-ideas before any expensive call.
+
+---
+
+## Self-hosting
+
+You need:
+- Node.js 20.9+;
+- an Anthropic API key;
+- a Supabase project;
+- a GitHub or Google OAuth app.
+
+Payments ([Dodo](https://dodopayments.com)) are optional.
 
 ```bash
-# 1. Clone the repo
 git clone https://github.com/nullhypeai/hypecheck.git
 cd hypecheck
-
-# 2. Install dependencies
 npm install
-
-# 3. Copy the environment variable template and fill in your values
-cp .env.example .env.local
-
-# 4. Start the development server
-npm run dev
+cp .env.example .env.local   # then fill in the values
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+1. **Database.** In Supabase's SQL Editor, run [`supabase/migrations/0001_initial_schema.sql`](supabase/migrations/0001_initial_schema.sql), then any later migrations in order.
+2. **Sign-in.** Enable GitHub and/or Google in Supabase Auth, and add `http://localhost:3000/**` to its Redirect URLs.
+3. **Env vars.** Fill in `.env.local`. These are required: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`, `NEXT_PUBLIC_APP_URL`. Add your email to `HYPECHECK_ADMIN_EMAILS` for unlimited reports.
+4. **Run.** `npm run dev`, then open http://localhost:3000, sign in and run a report.
+5. **Deploy.** Import the repo into Vercel, add the same env vars, then add your production URL to Supabase's Redirect URLs.
+
+**[docs/self-hosting.md](docs/self-hosting.md)** has every step in detail:
+- where each value comes from;
+- a verification checklist;
+- payments setup;
+- what to rebrand (including the privacy policy and terms, which you must replace);
+- troubleshooting.
+
+> **Using a coding agent?** Point it at this repository and ask it to follow `docs/self-hosting.md`. [`AGENTS.md`](AGENTS.md) tells agents how the repo is laid out and which steps need a human (dashboard access, OAuth apps, secrets).
 
 ---
 
-## Environment Variables
+## Configuration
 
-Create a `.env.local` file in the project root with the following keys:
+| Variable | Required | Purpose |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase auth and database |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yes | Server-side writes: reports, credits, payment webhook, `/admin` |
+| `ANTHROPIC_API_KEY` | Yes | Report generation. The org must allow web search |
+| `NEXT_PUBLIC_APP_URL` | Yes | Public URL: canonical links, sitemap, checkout return |
+| `HYPECHECK_ADMIN_EMAILS` | Recommended | Comma-separated emails with unlimited reports and `/admin` |
+| `ANTHROPIC_MODEL` / `ANTHROPIC_JUDGE_MODEL` | No | Override `claude-sonnet-5-5` / `claude-haiku-5-5` |
+| `DODO_*` (5 variables) | Payments only | See [`.env.example`](.env.example) and the guide |
 
-```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+Without payments configured:
+- every account gets 3 free reports;
+- admins get unlimited reports;
+- the free limit is set in `src/app/api/hypecheck/route.ts`.
 
-# Anthropic
-ANTHROPIC_API_KEY=your_anthropic_api_key
-# Optional overrides. Leave unset to use the defaults in code.
-# ANTHROPIC_MODEL=claude-sonnet-5-5
-# ANTHROPIC_JUDGE_MODEL=claude-haiku-5-5
+---
 
-# Dodo Payments
-DODO_SECRET_KEY=your_dodo_secret_key
-NEXT_PUBLIC_DODO_PUBLISHABLE_KEY=your_dodo_publishable_key
-DODO_PRODUCT_ID_SINGLE=your_dodo_single_report_product_id
-DODO_PRODUCT_ID_PACK=your_dodo_10_pack_product_id
-DODO_WEBHOOK_SECRET=your_dodo_webhook_secret
-DODO_ENVIRONMENT=test_mode
+## Development
 
-# App
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+```bash
+npm run dev        # http://localhost:3000
+npx tsc --noEmit   # type-check
+npm run lint
+npm run build
 ```
 
-`ANTHROPIC_MODEL` is optional. If it is not set, HypeCheck defaults to
-`claude-sonnet-5-5`. You can override it with another Claude model that supports
-adaptive thinking, the effort parameter, structured outputs and the
-`web_search_20260209` tool when testing quality or cost tradeoffs.
+| Path | What lives there |
+|---|---|
+| `src/lib/report/` | Prompt, report JSON schema, Claude call and research progress events |
+| `src/app/api/hypecheck/` | Report API: auth, credits, judge, NDJSON stream |
+| `src/app/api/payments/` | Dodo checkout and webhook |
+| `src/components/report/` | Report UI |
+| `src/components/check/` | Live research progress screen |
+| `src/app/` | Pages: landing, `/check`, `/report/[slug]`, `/reports`, `/admin`, legal, blog |
+| `src/lib/site.ts` | Public URL and repo links |
+| `supabase/migrations/` | Database schema, run in filename order |
 
-### Model Configuration
-
-Report generation lives in `src/lib/report/generate.ts` (prompt, JSON schema and
-the Claude call) and is called from `src/app/api/hypecheck/route.ts`, which
-streams progress to the browser. Each report:
-
-- **Researches the web** with Claude's server-side web search tool (up to 10
-  searches) for competitors, pricing, market figures and real discussions of
-  the problem. Quotes must be verbatim with a URL; the report lists its sources.
-- **Uses structured outputs** (`output_config.format` with a JSON schema), so
-  the response always matches the report shape.
-- **Uses adaptive thinking at effort `medium`.** Raise to `high` for deeper
-  analysis at higher cost and latency.
-- **Streams** with `max_tokens: 32000` and resumes `pause_turn` stops from the
-  search loop.
-- **Handles refusals**: a `cyber` or `frontier_llm` decline is retried once on
-  `claude-sonnet-5`; anything else returns a clear error and no credit is used.
-
-Typical cost is about $0.20 per report (input tokens from search results, about
-8 searches at $10 per 1,000, and output). Typical time is 40 to 60 seconds.
-
-### Input Judge
-
-Before a submission reaches the report model, a cheap pre-flight call to
-Claude Haiku 5.5 (`ANTHROPIC_JUDGE_MODEL`, optional override) classifies
-whether the text plausibly describes a startup, product, or side-project
-idea. Off-topic prompts — trivia questions, recipes, chit-chat, prompt
-injection attempts — are rejected with a `400` and the code
-`NOT_A_BUSINESS_IDEA` **before** any report is generated, so they never
-consume a free report or a paid credit. The judge costs a fraction of a
-cent per check, is deliberately lenient (weak ideas still pass; only clear
-non-ideas are rejected), and fails open: if the judge call errors, the
-request proceeds so a validation outage can never block real users.
+This project uses **Next.js 16**, which has breaking changes from earlier versions. Check `node_modules/next/dist/docs/` before relying on remembered APIs.
 
 ---
 
 ## Roadmap
 
-- [x] Core report generation with Claude
+- [x] Live web research with sourced competitors, quotes and market figures
 - [x] Credit-based one-time payments via Dodo Payments
-- [x] Shareable public report links
-- [x] Report history dashboard
-- [x] Public launch pricing with no recurring plans
-- [ ] Batch idea submission (compare multiple ideas side by side)
-- [ ] Slack / email delivery of reports
-- [ ] API access for power users
-- [ ] Idea tracking: re-run reports over time to watch market shifts
-- [ ] Team workspaces with shared report libraries
-- [ ] Browser extension for quick idea capture
+- [x] Shareable public report links and report history
+- [ ] Atomic credit accounting (database function)
+- [ ] Compare multiple ideas side by side
+- [ ] Re-run a report later to see what changed
+- [ ] API access
 
 ---
 
 ## Contributing
 
-Contributions are welcome. Please open an issue before submitting a pull request so we can align on scope.
+Contributions are welcome. Please open an issue first so we can agree on scope, then:
 
 ```bash
-# Fork the repo, then:
-git checkout -b feat/your-feature-name
-# make your changes
-git commit -m "feat: describe what you did"
-git push origin feat/your-feature-name
-# open a PR against main
+git checkout -b feat/your-feature
+# make your change; npx tsc --noEmit && npm run lint && npm run build must pass
+git commit -m "feat: what you did"
+git push origin feat/your-feature   # open a PR against main
 ```
 
-All PRs require a passing build and should follow the existing code style. For significant changes, open a discussion first.
+Changes to the prompt or scoring in `src/lib/report/generate.ts` should include a before/after example report in the PR description.
 
 ---
 
 ## License
 
-[MIT](LICENSE)
-
----
-
-> Built by [NullHype AI](https://nullhype.tech) · Powered by [Claude](https://www.anthropic.com)
+[MIT](LICENSE). Built by [NullHype AI](https://nullhype.tech). Powered by [Claude](https://www.anthropic.com).

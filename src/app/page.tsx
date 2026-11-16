@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { REPO_URL, SELF_HOSTING_URL, SITE_URL } from "@/lib/site";
 import SiteHeader from "@/components/site/SiteHeader";
 import SiteFooter from "@/components/site/SiteFooter";
 
@@ -26,7 +27,7 @@ const faqs = [
   {
     question: "Is HypeCheck open source?",
     answer:
-      "Yes. HypeCheck is open source, and the public repository is available at github.com/nullhypeai/hypecheck.",
+      "Yes. HypeCheck is MIT licensed and the code is at github.com/nullhypeai/hypecheck. The repository includes a self-hosting guide (docs/self-hosting.md) for running your own copy with your own Anthropic and Supabase accounts.",
   },
   {
     question: "Where does the data in a report come from?",
@@ -45,14 +46,14 @@ const hypeCheckStructuredData = [
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "NullHype AI",
-    url: "https://hypecheck.nullhype.tech",
-    sameAs: ["https://x.com/nullhypeai", "https://github.com/nullhypeai/hypecheck"],
+    url: SITE_URL,
+    sameAs: ["https://x.com/nullhypeai", REPO_URL],
   },
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "HypeCheck",
-    url: "https://hypecheck.nullhype.tech",
+    url: SITE_URL,
     description:
       "Open-source AI reality checks for startup ideas before builders spend weeks building the wrong thing.",
   },
@@ -62,8 +63,8 @@ const hypeCheckStructuredData = [
     name: "HypeCheck",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
-    url: "https://hypecheck.nullhype.tech",
-    codeRepository: "https://github.com/nullhypeai/hypecheck",
+    url: SITE_URL,
+    codeRepository: REPO_URL,
     description:
       "HypeCheck turns rough startup ideas into AI validation reports with a Hype Score, competitors, market sizing, risks, monetization viability, demand signals, and a build-or-don't-build verdict.",
     offers: [
@@ -293,6 +294,44 @@ function HypeCheckHome() {
                     </Link>
                   </div>
                 ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Open source */}
+        <section className="border-t border-ink">
+          <div className="mx-auto grid max-w-[1080px] gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[320px_1fr]">
+            <div>
+              <p className="kicker">Open source</p>
+              <h2 className="mt-3 font-serif text-[34px] font-medium leading-[1.1] tracking-[-0.02em] text-ink">
+                Read every line. Or run your own.
+              </h2>
+            </div>
+            <div>
+              <p className="max-w-[620px] text-[16px] leading-relaxed text-ink-soft">
+                HypeCheck is MIT licensed. The research prompt, the scoring rubric and the whole app are on GitHub, so
+                you can see exactly how a verdict is reached. You can also host your own copy with your own Anthropic
+                and Supabase accounts; the self-hosting guide is written so you, or your coding agent, can follow it
+                step by step.
+              </p>
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href={REPO_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-ink px-6 py-3 text-center text-[14px] font-medium text-paper transition-colors hover:bg-ink-soft"
+                >
+                  View on GitHub
+                </a>
+                <a
+                  href={SELF_HOSTING_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="border border-ink px-6 py-3 text-center text-[14px] font-medium text-ink transition-colors hover:bg-surface"
+                >
+                  Self-hosting guide
+                </a>
               </div>
             </div>
           </div>

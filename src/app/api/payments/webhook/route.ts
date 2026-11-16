@@ -2,10 +2,10 @@ import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { Webhook } from 'standardwebhooks'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+// Created per request so the app builds without Supabase env vars set.
+function serviceClient() {
+  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+}
 
 interface WebhookPayload {
   type: string
@@ -43,6 +43,7 @@ export async function POST(req: NextRequest) {
       const credits = parseInt(payload.data.metadata?.credits ?? '1', 10)
 
       if (userId) {
+        const supabase = serviceClient()
         // Atomically add credits using Supabase RPC or raw increment
         const { data: profile, error: fetchError } = await supabase
           .from('profiles')

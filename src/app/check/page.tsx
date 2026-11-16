@@ -35,8 +35,6 @@ export default function CheckPage() {
   const [startedAt, setStartedAt] = useState(0)
   const router = useRouter()
 
-  const supabase = createClient()
-
   useEffect(() => {
     if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('purchased') === 'true') {
       track('purchase_succeeded', { product: 'hypecheck' })
@@ -44,7 +42,7 @@ export default function CheckPage() {
   }, [])
 
   async function handleSignOut() {
-    await supabase.auth.signOut()
+    await createClient().auth.signOut()
     router.push('/login')
   }
 
