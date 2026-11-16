@@ -29,6 +29,7 @@ Follow [`docs/self-hosting.md`](docs/self-hosting.md) step by step. It is writte
 | Change the waiting screen | `src/components/check/ResearchProgress.tsx`, `src/app/check/page.tsx` |
 | Change look and feel | `src/app/globals.css` (design tokens), `src/components/site/` |
 | Change public URLs and repo links | `src/lib/site.ts` |
+| Write, edit or draft blog posts | `content/blog/*.md` (see `content/blog/README.md`), topic queue in `content/blog-backlog.yml`, drafter in `scripts/blog/draft-post.mjs`. Rendering: `src/lib/blog.ts`, `src/app/blog/` |
 | Change the database | Add a new numbered file in `supabase/migrations/`; never edit an applied one |
 
 Conventions and gotchas:

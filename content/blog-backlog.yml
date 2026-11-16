@@ -1,0 +1,210 @@
+# Topic backlog for the blog drafter (scripts/blog/draft-post.mjs).
+#
+# The drafter takes the first entry with `status: todo`, researches it on the web,
+# writes content/blog/<slug>.md with `draft: true`, and sets the entry to `drafted`.
+# A human reviews the pull request, edits, flips `draft: false`, then merges.
+# After merging, set the entry to `published` (or delete it).
+#
+# Fields:
+#   slug             URL slug, lowercase-hyphenated. Becomes /blog/<slug>. Never change it after publishing.
+#   working_title    A starting point. The drafter may improve it.
+#   primary_keyword  The search phrase the post should rank for. One per post; don't target the same phrase twice.
+#   secondary_keywords  Related phrases to cover naturally.
+#   reader           Who searches this and what they are deciding.
+#   angle            What makes this post more useful than the top results. The most important field.
+#   must_cover       Specific points, data or methods the draft has to include.
+#   avoid            Things that would make it generic or wrong.
+#   status           todo | drafted | published | skipped
+#
+# Order is priority order. Put the next topic you want at the top of the `todo` entries.
+
+- slug: how-to-test-pricing-before-you-build
+  working_title: How to Test Pricing Before You Build Anything
+  primary_keyword: how to test pricing for a startup
+  secondary_keywords: [pricing validation, willingness to pay, price testing MVP]
+  reader: A solo founder with a landing page idea who has no idea whether to charge $9 or $49 and no product yet.
+  angle: >-
+    Most pricing advice assumes you already have customers. This post is about getting a real price
+    signal with zero product: fake door checkout clicks, pre-sales with refunds, and asking about
+    current spend instead of hypothetical prices. Explain what each test actually measures and how
+    misleading each one can be.
+  must_cover:
+    - Van Westendorp price sensitivity questions, what they are good and bad at, with the four questions written out
+    - Fake door / painted door pricing tests and how to read a click versus a payment
+    - Pre-selling with a refund promise, and why money changing hands is the strongest signal
+    - Anchoring on what the customer spends today on the problem (tools, hours, contractors)
+    - A worked example with numbers for a hypothetical B2B tool
+  avoid:
+    - Generic "value-based pricing" advice with no test the reader can run this week
+    - Recommending specific SaaS tools without checking they exist and do what is claimed
+  status: drafted
+  drafted_on: 2026-11-16
+
+- slug: smoke-test-landing-page-conversion-rate
+  working_title: What Conversion Rate Proves Demand on a Smoke Test Landing Page?
+  primary_keyword: smoke test landing page conversion rate
+  secondary_keywords: [landing page validation, fake door test, waitlist conversion rate]
+  reader: A founder who ran a landing page with a signup form and got 4 percent conversion and does not know if that is good.
+  angle: >-
+    Founders quote benchmark numbers without context. Explain where published landing page benchmarks
+    come from, why traffic source dominates the number, and how to set a pass/fail threshold before
+    running the test instead of after.
+  must_cover:
+    - Published landing page conversion benchmarks with their source and what traffic they measured
+    - Why paid cold traffic, community posts, and friends produce wildly different rates
+    - Email signup versus "buy now" click versus deposit, and the drop between them
+    - How many visitors you need before a rate means anything (simple sample size reasoning, no heavy math)
+    - A pre-registration template: write the threshold and the decision before launching
+  avoid:
+    - Presenting a single benchmark number as the answer
+    - Statistics jargon without a plain explanation
+  status: todo
+
+- slug: customer-interview-questions-for-startup-validation
+  working_title: Customer Interview Questions That Don't Lie to You
+  primary_keyword: customer interview questions for startup validation
+  secondary_keywords: [problem interview questions, the mom test questions, customer discovery interviews]
+  reader: A developer about to talk to potential users for the first time who worries about leading questions.
+  angle: >-
+    Lists of 50 questions are useless. Give a short script built around past behavior and money already
+    spent, show bad versus good versions of the same question, and explain how to tell a real problem from
+    polite interest after the call.
+  must_cover:
+    - The core idea from Rob Fitzpatrick's The Mom Test (talk about their life, specifics in the past, not opinions about the future), credited
+    - Five or six bad questions rewritten as good ones
+    - Signals that count (workarounds, money spent, time spent, asking to be notified) versus compliments
+    - How to find the first ten people to talk to
+    - A note template for recording each interview
+  avoid:
+    - Reproducing long passages from the book
+    - Generic "be curious and listen" advice
+  status: todo
+
+- slug: validate-startup-idea-with-search-data
+  working_title: How to Use Search Data to Validate Demand for a Startup Idea
+  primary_keyword: validate startup idea with google trends
+  secondary_keywords: [keyword research for startup ideas, search demand validation, google trends startup]
+  reader: A founder who wants a free first read on whether anyone is looking for a solution before building.
+  angle: >-
+    Search data is easy to misread. Show what Google Trends can and cannot tell you (relative interest,
+    not volume), how to read autocomplete and "People also ask", and how to tell problem searches from
+    solution searches. Include the traps (seasonality, brand terms, tiny absolute numbers).
+  must_cover:
+    - What Google Trends numbers mean, from Google's own documentation
+    - Problem-aware versus solution-aware queries, with examples
+    - Free sources (Trends, autocomplete, People also ask, Search Console once live) and their limits
+    - A worked example comparing two ideas
+    - When low search volume is fine (new categories, B2B niches)
+  avoid:
+    - Quoting search volume numbers you can't source
+    - Implying search interest equals willingness to pay
+  status: todo
+
+- slug: bottom-up-market-sizing-for-indie-founders
+  working_title: Bottom-Up Market Sizing for Indie Founders (Skip the TAM Slide)
+  primary_keyword: bottom up market sizing
+  secondary_keywords: [tam sam som, market size for startup idea, how to estimate market size]
+  reader: An indie hacker deciding if a niche is big enough to support a small profitable business, not a venture pitch.
+  angle: >-
+    Top-down TAM numbers from analyst reports are mostly decoration. Show how to count reachable customers
+    from real lists (directories, job postings, app store listings, public company counts) and multiply by a
+    realistic price, then sanity check against a revenue goal.
+  must_cover:
+    - Why top-down TAM misleads small founders
+    - Concrete data sources for counting customers, with what each one is good for
+    - A worked example from customer count to annual revenue at 1, 5 and 10 percent reach
+    - The "how many customers do I need" calculation for a ramen-profitable goal
+  avoid:
+    - Made-up market size figures
+    - Investor-pitch framing
+  status: todo
+
+- slug: pre-selling-before-you-build
+  working_title: "Pre-Selling Before You Build: Deposits, LOIs and What Counts as Proof"
+  primary_keyword: how to pre-sell a product before building it
+  secondary_keywords: [pre-sales validation, letter of intent startup, presell saas]
+  reader: A founder who has had encouraging conversations and wants harder evidence before quitting a job or spending months building.
+  angle: >-
+    Rank commitment signals from weakest to strongest and explain how to ask for each without being
+    sleazy. Cover how to handle refunds and delivery dates honestly, and which payment setups make a
+    pre-sale simple.
+  must_cover:
+    - A ladder of commitment signals (email, call, LOI, deposit, full prepayment) and what each proves
+    - Example wording for asking for a pre-order
+    - Refund and timeline promises, and consumer protection basics to check in your country
+    - Well documented real examples of companies that pre-sold before building, with sources
+  avoid:
+    - Legal advice beyond "check the rules where you sell"
+    - Unsourced founder anecdotes
+  status: todo
+
+- slug: competitor-research-from-customer-reviews
+  working_title: Find the Gap in a Crowded Market by Reading Competitors' Reviews
+  primary_keyword: competitor analysis using customer reviews
+  secondary_keywords: [competitor research startup, g2 reviews analysis, find market gap]
+  reader: A founder who found ten competitors and is about to give up, or about to build a clone.
+  angle: >-
+    Crowded markets often have a reachable gap. Show a repeatable method for mining 2 and 3 star reviews
+    (G2, Capterra, App Store, Chrome Web Store, Reddit) for the jobs incumbents do badly, and how to turn
+    complaints into a positioning test.
+  must_cover:
+    - Where reviews live for B2B, consumer apps and browser extensions
+    - Why mid-rating reviews are more useful than 1 star rants
+    - A tagging sheet template (job, complaint, segment, workaround)
+    - How to turn the top complaint into a landing page headline test
+  avoid:
+    - Scraping advice that breaks site terms
+    - Treating "competition validates the market" as the whole argument
+  status: todo
+
+- slug: concierge-mvp-vs-wizard-of-oz
+  working_title: "Concierge MVP vs Wizard of Oz: How to Fake It Before You Build It"
+  primary_keyword: concierge mvp
+  secondary_keywords: [wizard of oz mvp, manual mvp, no code validation]
+  reader: A technical founder tempted to automate everything on day one.
+  angle: >-
+    Explain the difference clearly, when each is the right test, and the specific failure modes (doing
+    unscalable work forever, hiding the manual work dishonestly). Use well documented examples with sources.
+  must_cover:
+    - Clear definitions with the origin of each term, sourced
+    - Two or three documented real examples with links
+    - A decision rule for choosing between them
+    - What to measure during a concierge test and when to stop
+  avoid:
+    - Retelling famous examples from memory without a source
+  status: todo
+
+- slug: startup-idea-kill-criteria
+  working_title: "Kill Criteria: Decide in Advance What Would Make You Drop an Idea"
+  primary_keyword: when to give up on a startup idea
+  secondary_keywords: [kill criteria, startup pivot or quit, validation thresholds]
+  reader: A founder three months into a side project with lukewarm signals who can't decide whether to keep going.
+  angle: >-
+    Sunk cost makes every lukewarm signal look like progress. Show how to write kill criteria before each
+    experiment, borrowing from pre-mortems and pre-registration, with example thresholds for common tests.
+  must_cover:
+    - The pre-mortem technique (Gary Klein), credited and sourced
+    - Example kill criteria for interviews, landing pages, pre-sales and outreach
+    - Time boxes and what to do when results land in the grey zone
+    - A one-page template
+  avoid:
+    - Motivational "never give up" or "fail fast" platitudes
+  status: todo
+
+- slug: cold-outreach-as-a-demand-test
+  working_title: Using Cold Outreach as a Demand Test for a B2B Idea
+  primary_keyword: validate b2b saas idea
+  secondary_keywords: [cold email validation, linkedin outreach validation, b2b demand testing]
+  reader: A developer with a B2B tool idea and no audience.
+  angle: >-
+    Reply rate to a specific problem statement is a cheap, fast demand signal if you design the test well.
+    Cover list building, message design that tests the problem rather than the product, and how to read
+    replies. Stay on the right side of anti-spam rules.
+  must_cover:
+    - What published cold email reply rate data says, with sources and caveats
+    - Writing a message that tests the problem, with an example
+    - Volume needed and how to log results
+    - Anti-spam basics (CAN-SPAM, GDPR legitimate interest) with links to the official guidance
+  avoid:
+    - Growth-hack tactics, scraping personal emails, or automation that breaks platform rules
+  status: todo

@@ -46,7 +46,7 @@ Nov 2026: upgraded to Sonnet 5.5 with live web search, NDJSON progress UI, edito
    3. Then merge the branch to `main` and tick "Atomic credit accounting" in the README roadmap.
    Do **not** run `0001_initial_schema.sql` on production; it is for fresh installs and the tables already exist.
 2. **Manual production checks:** run one real signed-in report on hypecheck.nullhype.tech, open its share link signed out, and open `/admin` with the admin account.
-3. **SEO:** verify the domain in Google Search Console and Bing Webmaster Tools, submit `/sitemap.xml`. A weekly blog pipeline is being considered.
+3. **SEO:** verify the domain in Google Search Console and Bing Webmaster Tools (set `GOOGLE_SITE_VERIFICATION` / `BING_SITE_VERIFICATION` in Vercel Production, redeploy, verify), then submit `/sitemap.xml`. Blog is file-based (`content/blog/*.md`); AI drafts come from `npm run blog:draft -- --pr` using `content/blog-backlog.yml` and always land as draft PRs. Schedule: `.github/workflows/blog-draft.yml` (Mon + Thu 13:00 UTC). To turn it on, add the `ANTHROPIC_API_KEY` repo secret, set the repo variable `BLOG_DRAFTS_ENABLED=true`, and allow Actions to create PRs (Settings > Actions > General). Check the org-level Actions setting for `nullhypeai` too.
 4. **Housekeeping:** stale Codex worktree at `~/.codex/worktrees/2fca/hypecheck` and old Claude worktrees can be removed once their branches are merged or abandoned.
 
 ## Gotchas

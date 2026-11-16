@@ -1,10 +1,20 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
+import { getAllPosts } from "@/lib/blog";
 
 const siteUrl = SITE_URL;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
+  const posts = getAllPosts();
+  const latestPost = posts[0]?.updated ?? posts[0]?.date;
+
+  const blogPosts: MetadataRoute.Sitemap = posts.map((post) => ({
+    url: `${siteUrl}/blog/${post.slug}`,
+    lastModified: new Date(`${post.updated ?? post.date}T00:00:00Z`),
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
 
   return [
     {
@@ -21,16 +31,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${siteUrl}/blog`,
-      lastModified: now,
+      lastModified: latestPost ? new Date(`${latestPost}T00:00:00Z`) : now,
       changeFrequency: "weekly",
       priority: 0.8,
     },
-    {
-      url: `${siteUrl}/blog/how-to-validate-a-startup-idea-before-building-mvp`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
+    ...blogPosts,
     {
       url: `${siteUrl}/privacy`,
       lastModified: now,
