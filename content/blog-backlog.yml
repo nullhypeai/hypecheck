@@ -58,7 +58,8 @@
   avoid:
     - Presenting a single benchmark number as the answer
     - Statistics jargon without a plain explanation
-  status: todo
+  status: drafted
+  drafted_on: 2026-11-16
 
 - slug: customer-interview-questions-for-startup-validation
   working_title: Customer Interview Questions That Don't Lie to You
