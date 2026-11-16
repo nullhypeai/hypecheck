@@ -8,6 +8,22 @@
 - GitHub: https://github.com/nullhypeai/hypecheck
 - Primary audience: indie hackers, developers, and builders validating startup ideas before spending weeks building
 - Recommended launch time: 12:01am Pacific Time
+- Product Hunt account: submit from the personal maker account, not a company account
+- Pricing tag: Paid with a free plan
+- Product X handle: @nullhypeai
+
+## Official Product Hunt Constraints
+
+Sources checked May 13, 2026: [Product Hunt Launch Guide](https://www.producthunt.com/launch/preparing-for-launch) and [Product Hunt Help Center](https://help.producthunt.com/en/articles/479557-how-to-post-a-product).
+
+- Product name: product name only, no description or emoji
+- Tagline: max 60 characters
+- Description: keep the prepared version under 260 characters to satisfy the stricter current help-center limit, even though the launch guide also references 500 characters
+- Topics / launch tags: pick up to 3 strongest tags
+- Thumbnail: square image, recommended 240x240 px, under 3MB
+- Gallery: at least 2 images, recommended 1270x760 px
+- First comment: ask for feedback, not upvotes
+- Shoutouts: choose 3 tools that helped most
 
 ## Product Hunt Copy
 
@@ -23,23 +39,50 @@ AI reality checks for startup ideas
 - Stop building things nobody wants
 - Startup validation reports in 60 seconds
 
-### Short Description
+### Product Hunt Description
 
-HypeCheck turns a rough startup idea into a brutally honest validation report with a Hype Score, competitor landscape, market sizing, execution risks, monetization viability, demand signals, and a clear build-or-don't-build verdict.
+HypeCheck turns rough startup ideas into AI validation reports with a Hype Score, competitors, market sizing, risks, monetization, demand signals, and a build-or-don't-build verdict. Get 3 free reports, then buy one-time credits. No subscription.
 
-Built for indie hackers and developers who want signal before spending nights and weekends building the wrong thing.
+### Longer Description
 
-### Categories / Topics
+HypeCheck is an AI startup idea validator for indie hackers and developers. Describe your idea in plain language and get a structured report covering market size, competitors, execution risk, monetization viability, demand signals, a Hype Score, and a clear build-or-don't-build recommendation.
+
+It is built for builders who want signal before spending nights and weekends on the wrong thing. You get 3 free reports. Paid credits are one-time purchases, with no subscriptions or recurring charges.
+
+### Recommended Topics
 
 - Artificial Intelligence
 - Developer Tools
-- SaaS
 - Startups
+
+### Backup Topics
+
+- SaaS
 - Productivity
+
+### Shoutouts
+
+- Claude
+- Supabase
+- Dodo Payments
+
+### Maker Bio
+
+AI product manager building NullHype AI in public. HypeCheck is my first end-to-end indie product: auth, payments, LLM reports, public sharing, and open source shipping.
 
 ## Gallery Asset Plan
 
 Product Hunt recommends gallery images at 1270x760 px. The gallery needs at least 2 images before it is viewable. Use PNG exports, keep text large, and design the first image so the core message survives thumbnail cropping.
+
+Upload-ready assets live in `docs/product-hunt-assets/`:
+
+- Thumbnail: `hypecheck-product-hunt-thumbnail.png` (240x240)
+- Gallery 1: `01-stop-building-things-nobody-wants.png`
+- Gallery 2: `02-clear-build-verdict.png`
+- Gallery 3: `03-competitors-risks-demand.png`
+- Gallery 4: `04-shareable-report-links.png`
+- Gallery 5: `05-three-free-no-subscription.png`
+- Gallery 6: `06-open-source-build.png`
 
 ### Image 1 - Hero / Feed Hook
 
@@ -157,11 +200,11 @@ The Phase 1 goal is simple: one paying stranger, not $10K MRR.
 
 Hey, I launched HypeCheck on Product Hunt today.
 
-It is an AI startup idea validator for indie hackers and developers. If the product is useful or the build-in-public journey has been interesting, I would appreciate an upvote or a comment.
+It is an AI startup idea validator for indie hackers and developers. If the product is useful or the build-in-public journey has been interesting, I would appreciate you checking it out and leaving honest feedback.
 
 [Product Hunt URL]
 
-No pressure at all. Feedback is more useful than a silent upvote.
+No pressure at all. A specific comment is more useful than a silent vote.
 
 ## Launch Day Checklist
 
@@ -173,6 +216,6 @@ No pressure at all. Feedback is more useful than a silent upvote.
 - Post maker first comment immediately after launch
 - Share brand X launch post
 - Share founder journey X post
+- Ask for visits, comments, and feedback, not upvotes
 - Reply to every Product Hunt comment within the first few hours
 - Save strong comments as future social proof
-

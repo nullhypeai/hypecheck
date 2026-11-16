@@ -36,8 +36,18 @@ npm run lint
 ```
 
 ## Current state / notes
-Live and established (Product Hunt launched). Pricing: 3 free, then $5 / 1 report or $8.99 / 10. `@vercel/analytics` already wired in `layout.tsx`.
-Working tree has uncommitted `docs/product-hunt-*` + `scripts/` — your own pre-existing work, untouched.
+Live and established (Product Hunt launched May 2026). Pricing: 3 free, then $5 / 1 report or $8.99 / 10. `@vercel/analytics` already wired in `layout.tsx`.
+Nov 2026: upgraded to Sonnet 5.5 with live web search, NDJSON progress UI, editorial redesign, self-hosting docs (commits f0aed0a, 4690efc). Product Hunt launch materials are committed under `docs/product-hunt-*` and `scripts/generate-product-hunt-assets.mjs` (May 2026 copy and visuals; they show the old design).
+
+## Open items (as of 2026-11-16)
+1. **Atomic credits, not shipped yet.** Branch `claude/wizardly-bartik-3a135d` adds `supabase/migrations/0002_atomic_credits.sql` and reworks credit handling in `src/app/api/hypecheck/route.ts` (reserve before generation, consume with the report insert, refund on failure). Order matters because `main` auto-deploys:
+   1. Optional check in the Supabase SQL Editor: `select table_name, column_name, data_type from information_schema.columns where table_schema='public' and table_name in ('profiles','reports') order by 1;` (needs `profiles.report_credits` and `reports.user_id, slug, idea_text, report_data`).
+   2. Paste and run all of `0002_atomic_credits.sql` in the SQL Editor (one transaction; only adds `hypecheck_*` objects and drops the user insert policy on `reports`). Safe to run before the merge: current `main` saves reports with the service-role key.
+   3. Then merge the branch to `main` and tick "Atomic credit accounting" in the README roadmap.
+   Do **not** run `0001_initial_schema.sql` on production; it is for fresh installs and the tables already exist.
+2. **Manual production checks:** run one real signed-in report on hypecheck.nullhype.tech, open its share link signed out, and open `/admin` with the admin account.
+3. **SEO:** verify the domain in Google Search Console and Bing Webmaster Tools, submit `/sitemap.xml`. A weekly blog pipeline is being considered.
+4. **Housekeeping:** stale Codex worktree at `~/.codex/worktrees/2fca/hypecheck` and old Claude worktrees can be removed once their branches are merged or abandoned.
 
 ## Gotchas
 Vercel CLI on this machine is old/flaky for env/domain ops → use REST API or dashboard. Supabase service-role + Dodo keys appeared in a build chat → rotation recommended (re-wire both projects after).
