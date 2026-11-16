@@ -62,14 +62,43 @@ async function isBusinessIdea(idea: string): Promise<boolean> {
   }
 }
 
-// Writes that happen after streaming starts can't touch auth cookies (headers are already sent),
-// so they use a service-role client scoped explicitly to the user verified at the start of the request.
-function persistenceClient(fallback: SupabaseClient): SupabaseClient {
+// Service-role client for entitlement RPCs and report writes. Users can't insert reports or
+// change credits themselves (RLS), and writes after streaming starts can't touch auth cookies
+// anyway. Always scoped explicitly to the user verified at the start of the request.
+// Null when the key isn't configured.
+function serviceClient(): SupabaseClient | null {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY
-  if (!key) return fallback
+  if (!key) return null
   return createServiceClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, key, {
     auth: { persistSession: false, autoRefreshToken: false },
   })
+}
+
+// ── Entitlements ────────────────────────────────────────────────────────────
+// Credits and free slots are reserved atomically in Postgres before generation, then either
+// consumed together with the report insert or refunded. See
+// supabase/migrations/0002_atomic_credits.sql.
+
+type Reservation = { id: string; kind: 'free' | 'credit' }
+
+async function reserveEntitlement(db: SupabaseClient, userId: string): Promise<Reservation | null> {
+  const { data, error } = await db.rpc('hypecheck_reserve_report', { p_user_id: userId })
+  if (error) throw new Error(`Entitlement reservation failed: ${error.message}`)
+  const row = (data as { reservation_id: string; kind: 'free' | 'credit' }[] | null)?.[0]
+  return row ? { id: row.reservation_id, kind: row.kind } : null
+}
+
+// Best effort: if this fails, the next reservation for the user expires and refunds it after 15 minutes.
+async function refundEntitlement(db: SupabaseClient, userId: string, reservation: Reservation) {
+  try {
+    const { error } = await db.rpc('hypecheck_refund_report', {
+      p_reservation_id: reservation.id,
+      p_user_id: userId,
+    })
+    if (error) console.error('Failed to refund reservation:', reservation.id, error)
+  } catch (error) {
+    console.error('Failed to refund reservation:', reservation.id, error)
+  }
 }
 
 type StreamEvent =
@@ -79,6 +108,9 @@ type StreamEvent =
   | { type: 'error'; message: string }
 
 export async function POST(request: NextRequest) {
+  // Set once an entitlement is reserved; cleared once it is refunded or handed to the background job.
+  let releaseReservation: (() => Promise<void>) | null = null
+
   try {
     // ── Auth check ──────────────────────────────────────────────────────────
     const supabase = await createClient()
@@ -88,39 +120,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
-      )
-    }
-
-    // ── Usage gate ──────────────────────────────────────────────────────────
-    const isAdminUser = isAdminEmail(user.email)
-    let reportCredits = 0
-    let hasFreeTier = true
-    let hasPaidCredits = false
-
-    if (!isAdminUser) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('report_credits')
-        .eq('id', user.id)
-        .single()
-
-      reportCredits = profile?.report_credits ?? 0
-
-      // Count how many free reports the user has already used
-      const { count } = await supabase
-        .from('reports')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-
-      const reportsUsed = count ?? 0
-      hasFreeTier = reportsUsed < 3
-      hasPaidCredits = reportCredits > 0
-    }
-
-    if (!hasFreeTier && !hasPaidCredits) {
-      return NextResponse.json(
-        { error: 'FREE_TIER_EXHAUSTED' },
-        { status: 403 }
       )
     }
 
@@ -143,8 +142,37 @@ export async function POST(request: NextRequest) {
 
     const ideaText = idea.trim()
 
+    // ── Usage gate ──────────────────────────────────────────────────────────
+    // Reserve a free slot or one credit atomically. Every exit after this point either
+    // consumes the reservation (with the report insert) or refunds it. Admins bypass credits.
+    const service = serviceClient()
+    if (!service) {
+      console.error('SUPABASE_SERVICE_ROLE_KEY is not set; cannot meter or save reports.')
+      return NextResponse.json(
+        { error: 'Something went wrong. Please try again.' },
+        { status: 500 }
+      )
+    }
+
+    const isAdminUser = isAdminEmail(user.email)
+    let reservation: Reservation | null = null
+
+    if (!isAdminUser) {
+      reservation = await reserveEntitlement(service, user.id)
+      if (!reservation) {
+        return NextResponse.json(
+          { error: 'FREE_TIER_EXHAUSTED' },
+          { status: 403 }
+        )
+      }
+      const held = reservation
+      releaseReservation = () => refundEntitlement(service, user.id, held)
+    }
+
     // ── Judge gate ──────────────────────────────────────────────────────────
     if (!(await isBusinessIdea(ideaText))) {
+      await releaseReservation?.()
+      releaseReservation = null
       return NextResponse.json(
         {
           error: "That doesn't look like a business idea. Describe a startup, product, or side-project idea to run HypeCheck.",
@@ -158,7 +186,6 @@ export async function POST(request: NextRequest) {
     // The client renders each event live, so long research never looks stuck.
     // The job runs independently of the stream and is registered with after(), so a closed tab
     // doesn't cut it short: the report still saves and shows up in the user's history.
-    const db = persistenceClient(supabase)
     const encoder = new TextEncoder()
     let controller = null as ReadableStreamDefaultController<Uint8Array> | null
     let open = true
@@ -180,6 +207,9 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // The job below now owns the reservation: it consumes it on success and refunds it on failure.
+    const jobReservation = reservation
+    releaseReservation = null
     const job = (async () => {
       try {
         const { report } = await generateReport(client, ideaText, send)
@@ -187,39 +217,34 @@ export async function POST(request: NextRequest) {
         send({ type: 'phase', phase: 'saving' })
         const slug = generateSlug()
 
-        const { error: insertError } = await db
-          .from('reports')
-          .insert({
-            user_id: user.id,
-            idea_text: ideaText,
-            report_data: report,
-            slug,
-          })
+        // Non-admins: insert the report and consume the reservation in one transaction.
+        const { error: insertError } = jobReservation
+          ? await service.rpc('hypecheck_complete_report', {
+              p_reservation_id: jobReservation.id,
+              p_user_id: user.id,
+              p_slug: slug,
+              p_idea_text: ideaText,
+              p_report_data: report,
+            })
+          : await service
+              .from('reports')
+              .insert({
+                user_id: user.id,
+                idea_text: ideaText,
+                report_data: report,
+                slug,
+              })
 
         if (insertError) {
           console.error('Failed to save report to Supabase:', insertError)
+          if (jobReservation) await refundEntitlement(service, user.id, jobReservation)
           send({ type: 'error', message: 'Your report was generated but could not be saved. Please try again; you were not charged.' })
           return
         }
 
-        // Deduct one paid credit if the user was past free tier. Admin users bypass credits.
-        if (!isAdminUser && !hasFreeTier && hasPaidCredits) {
-          const { error: creditError } = await db
-            .from('profiles')
-            .update({
-              report_credits: reportCredits - 1,
-              updated_at: new Date().toISOString(),
-            })
-            .eq('id', user.id)
-
-          if (creditError) {
-            console.error('Failed to deduct credit:', creditError)
-            // Report already saved. Don't fail the request, just log.
-          }
-        }
-
         send({ type: 'done', slug })
       } catch (error) {
+        if (jobReservation) await refundEntitlement(service, user.id, jobReservation)
         if (error instanceof ReportRefusedError) {
           console.warn('Report refused:', error.category)
           send({ type: 'error', message: "HypeCheck can't analyse this idea. You were not charged." })
@@ -250,6 +275,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('HypeCheck API error:', error)
+    await releaseReservation?.()
     return NextResponse.json(
       { error: 'Something went wrong. Please try again.' },
       { status: 500 }
