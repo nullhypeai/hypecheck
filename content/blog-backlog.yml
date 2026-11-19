@@ -78,7 +78,8 @@
   avoid:
     - Reproducing long passages from the book
     - Generic "be curious and listen" advice
-  status: todo
+  status: drafted
+  drafted_on: 2026-11-19
 
 - slug: validate-startup-idea-with-search-data
   working_title: How to Use Search Data to Validate Demand for a Startup Idea
