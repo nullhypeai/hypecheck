@@ -98,7 +98,8 @@
   avoid:
     - Quoting search volume numbers you can't source
     - Implying search interest equals willingness to pay
-  status: todo
+  status: drafted
+  drafted_on: 2026-11-24
 
 - slug: bottom-up-market-sizing-for-indie-founders
   working_title: Bottom-Up Market Sizing for Indie Founders (Skip the TAM Slide)
